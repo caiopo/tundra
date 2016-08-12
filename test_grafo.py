@@ -49,6 +49,11 @@ class GrafoTest(unittest.TestCase):
             self.assertIn(i, g.adjacentes((i + 1) % MAX_N),
                 'estes vértices deveriam estar conectados')
 
+    def test_conecta_raises(self):
+        with self.assertRaises(KeyError,
+            msg='conectar vértices inexistentes deveria gerar uma exception'):
+            Grafo().conecta(0, 1)
+
     def test_desconecta(self):
         g = Grafo()
 
@@ -66,25 +71,31 @@ class GrafoTest(unittest.TestCase):
                 'estes vértices não deveriam estar conectados')
 
     def test_desconecta_raises(self):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(KeyError,
+            msg='desconectar vértices inexistentes deveria gerar uma exception'):
             Grafo().desconecta(0, 1)
 
     def test_ordem(self):
-        g = Grafo()
-
-        for i in range(MAX_N):
-            g.adiciona_vertice(i)
-
-        self.assertEqual(g.ordem(), MAX_N)
-
-    def test_vertice(self):
         g = Grafo()
 
         self.assertEqual(g.ordem(), 0)
 
         for i in range(MAX_N):
             g.adiciona_vertice(i)
-            self.assertEqual(g.ordem(), i+1)
+            self.assertEqual(g.ordem(), i+1,
+                'ordem deveria ser igual ao número de vértices no grafo')
+
+    def test_vertices(self):
+        g = Grafo()
+
+        for i in range(MAX_N):
+            g.adiciona_vertice(i)
+
+        vertices = g.vertices()
+
+        for i in range(MAX_N):
+            self.assertIn(i, vertices,
+                '{} deveria ser um elemento de {}'.format(i, vertices))
 
     def test_um_vertice(self):
         g = Grafo()
@@ -132,7 +143,6 @@ class GrafoTest(unittest.TestCase):
         for i in range(MAX_N):
             self.assertEqual(g.grau(i), 4)
 
-
     def test_regular(self):
         g = Grafo()
 
@@ -174,9 +184,25 @@ class GrafoTest(unittest.TestCase):
         self.assertTrue(g.eh_completo())
 
     def test_conexo(self):
-        # TO-DO
-        pass
+        g = Grafo()
 
+        for i in range(MAX_N):
+            g.adiciona_vertice(i)
+
+        self.assertFalse(g.eh_conexo(),
+            'não deveria ser conexo')
+
+        for i in range(0, MAX_N, 2):
+            g.conecta(i, i+1)
+
+        self.assertFalse(g.eh_conexo(),
+            'não deveria ser conexo')
+
+        for i in range(1, MAX_N, 2):
+            g.conecta(i, (i + 1) % MAX_N)
+
+        self.assertTrue(g.eh_conexo(),
+            'deveria ser conexo')
 
     def test_arvore_true(self):
         g = Grafo()
@@ -204,6 +230,26 @@ class GrafoTest(unittest.TestCase):
 
         self.assertFalse(g.eh_arvore(), 'não deveria ser uma árvore')
 
+    def test_fecho_transitivo(self):
+        g = Grafo()
+
+        for i in range(MAX_N):
+            g.adiciona_vertice(i)
+
+        for i in range(MAX_N):
+            self.assertEqual(len(g.fecho_transitivo(i)), 1)
+
+        for i in range(0, MAX_N, 2):
+            g.conecta(i, (i + 1) % MAX_N)
+
+        for i in range(MAX_N):
+            self.assertEqual(len(g.fecho_transitivo(i)), 2)
+
+        for i in range(1, MAX_N, 2):
+            g.conecta(i, (i + 1) % MAX_N)
+
+        for i in range(MAX_N):
+            self.assertEqual(len(g.fecho_transitivo(i)), g.ordem())
 
 if __name__ == '__main__':
     unittest.main()

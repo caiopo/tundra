@@ -94,7 +94,8 @@ class Grafo:
         Verifica se existe pelo menos um caminho entre
         cada par de vértices de G
         """
-        return sorted(self.vertices()) == sorted(self.fecho_transitivo(self.um_vertice()))
+        return (sorted(self.vertices()) ==
+                    sorted(self.fecho_transitivo(self.um_vertice())))
 
     def eh_arvore(self):
         """
@@ -125,24 +126,19 @@ class Grafo:
 
         return self.eh_conexo() and not ha_ciclo_com(v, v)
 
-    def fecho_transitivo(self, v):
+    def fecho_transitivo(self, v, ja_visitados=None):
         """
         Retorna um conjunto contendo todos os vértices de G que
         são transitivamente alcancáveis partindo-se de v
         """
-        def procura_fecho_transitivo(v, ja_visitados=None):
-            """
-            Privado - utilizada por G.fechoTransitivo
-            """
-            ja_visitados = ja_visitados or []
+        ja_visitados = ja_visitados or []
 
-            ja_visitados.append(v)
+        ja_visitados.append(v)
 
-            for v_adj in self.vertices():
-                if not v_adj in ja_visitados:
-                    procura_fecho_transitivo(v_adj, ja_visitados)
+        for v_adj in self.adjacentes(v):
+            if not v_adj in ja_visitados:
+                self.fecho_transitivo(v_adj, ja_visitados)
 
-            return ja_visitados
+        return ja_visitados
 
-        return procura_fecho_transitivo(v)
 
