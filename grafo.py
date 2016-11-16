@@ -1,17 +1,17 @@
 from random import choice
-from collections import defaultdict
+from typing import Hashable, Set, Optional
 
 class Grafo:
     def __init__(self):
         self._vertices = {}
 
-    def adiciona_vertice(self, v):
+    def adiciona_vertice(self, v: Hashable) -> None:
         """
         Adiciona um novo vértice em G
         """
         self._vertices[v] = set()
 
-    def remove_vertice(self, v):
+    def remove_vertice(self, v: Hashable) -> None:
         """
         Remove um vértice de G, juntamente com todas as conexões
         """
@@ -20,14 +20,14 @@ class Grafo:
 
         del self._vertices[v]
 
-    def conecta(self, v1, v2):
+    def conecta(self, v1: Hashable, v2: Hashable) -> None:
         """
         Conecta os vértices v1 e v2 em G
         """
         self._vertices[v1].add(v2)
         self._vertices[v2].add(v1)
 
-    def desconecta(self, v1, v2):
+    def desconecta(self, v1: Hashable, v2: Hashable) -> None:
         """
         Desconecta os vértices v1 e v2 em G
         """
@@ -35,37 +35,37 @@ class Grafo:
         if v1 != v2:
             self._vertices[v2].remove(v1)
 
-    def ordem(self):
+    def ordem(self) -> int:
         """
         Retorna o número de vértices de G
         """
         return len(self._vertices)
 
-    def vertices(self):
+    def vertices(self) -> Set:
         """
         Retorna um conjunto contendo os vértices de G
         """
         return set(self._vertices.keys())
 
-    def um_vertice(self):
+    def um_vertice(self) -> Hashable:
         """
         Retorna um vértice qualquer de G
         """
         return choice(tuple(self.vertices()))
 
-    def adjacentes(self, v):
+    def adjacentes(self, v: Hashable) -> Set:
         """
         Retorna um conjunto contendo os vértices adjacentes a v em G
         """
         return set(self._vertices[v])
 
-    def grau(self, v):
+    def grau(self, v: Hashable) -> int:
         """
         Retorna o número de vértices adjacentes a v em G
         """
         return len(self.adjacentes(v))
 
-    def eh_regular(self):
+    def eh_regular(self) -> bool:
         """
         Verifica se todos os vértices de G possuem o mesmo grau
         """
@@ -77,7 +77,7 @@ class Grafo:
 
         return True
 
-    def eh_completo(self):
+    def eh_completo(self) -> bool:
         """
         Verifica se cada vértice de G está conectado
         a todos os outros vértices
@@ -90,14 +90,14 @@ class Grafo:
 
         return True
 
-    def eh_conexo(self):
+    def eh_conexo(self) -> bool:
         """
         Verifica se existe pelo menos um caminho entre
         cada par de vértices de G
         """
         return self.vertices() == self.fecho_transitivo(self.um_vertice())
 
-    def eh_arvore(self):
+    def eh_arvore(self) -> bool:
         """
         Verifica se não há ciclos em G
         """
@@ -126,7 +126,8 @@ class Grafo:
 
         return self.eh_conexo() and not ha_ciclo_com(v, v)
 
-    def fecho_transitivo(self, v, ja_visitados=None):
+    def fecho_transitivo(self, v: Hashable,
+        ja_visitados: Optional[Set] = None) -> Set:
         """
         Retorna um conjunto contendo todos os vértices de G que
         são transitivamente alcancáveis partindo-se de v
