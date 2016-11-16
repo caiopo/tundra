@@ -17,8 +17,6 @@ class GrafoTest(unittest.TestCase):
                 'i deveria pertencer ao grafo')
 
     def test_remove_vertice(self):
-
-
         for i in range(MAX_N):
             self.g.remove_vertice(i)
 
