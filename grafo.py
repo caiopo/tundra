@@ -1,4 +1,5 @@
 from random import choice
+from collections import defaultdict
 
 class Grafo:
     def __init__(self):
@@ -12,7 +13,7 @@ class Grafo:
 
     def remove_vertice(self, v):
         """
-        Remove um  vértice de G, juntamente com todas as conexões
+        Remove um vértice de G, juntamente com todas as conexões
         """
         for v2 in self._vertices[v]:
             self.desconecta(v, v2)
@@ -44,19 +45,19 @@ class Grafo:
         """
         Retorna um conjunto contendo os vértices de G
         """
-        return tuple(self._vertices.keys())
+        return set(self._vertices.keys())
 
     def um_vertice(self):
         """
         Retorna um vértice qualquer de G
         """
-        return choice(self.vertices())
+        return choice(tuple(self.vertices()))
 
     def adjacentes(self, v):
         """
         Retorna um conjunto contendo os vértices adjacentes a v em G
         """
-        return tuple(self._vertices[v])
+        return set(self._vertices[v])
 
     def grau(self, v):
         """
@@ -78,7 +79,7 @@ class Grafo:
 
     def eh_completo(self):
         """
-        Verifica se cada vértice de G está conectados
+        Verifica se cada vértice de G está conectado
         a todos os outros vértices
         """
         grau = self.ordem() - 1
@@ -94,8 +95,7 @@ class Grafo:
         Verifica se existe pelo menos um caminho entre
         cada par de vértices de G
         """
-        return (sorted(self.vertices()) ==
-                    sorted(self.fecho_transitivo(self.um_vertice())))
+        return self.vertices() == self.fecho_transitivo(self.um_vertice())
 
     def eh_arvore(self):
         """
@@ -106,12 +106,12 @@ class Grafo:
             Privado - verifica se v faz parte de algum ciclo no grafo
             """
 
-            ja_visitados = ja_visitados or []
+            ja_visitados = ja_visitados or set()
 
             if v in ja_visitados:
                 return True
 
-            ja_visitados.append(v)
+            ja_visitados.add(v)
 
             for v_adj in self.adjacentes(v):
                 if v_adj != v_anterior:
@@ -131,14 +131,12 @@ class Grafo:
         Retorna um conjunto contendo todos os vértices de G que
         são transitivamente alcancáveis partindo-se de v
         """
-        ja_visitados = ja_visitados or []
+        ja_visitados = ja_visitados or set()
 
-        ja_visitados.append(v)
+        ja_visitados.add(v)
 
         for v_adj in self.adjacentes(v):
             if not v_adj in ja_visitados:
                 self.fecho_transitivo(v_adj, ja_visitados)
 
         return ja_visitados
-
-
