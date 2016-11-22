@@ -1,14 +1,11 @@
 from random import choice
-from typing import Hashable, Set, Optional
-
-class GraphException(Exception):
-    pass
+from typing import Set, Optional, Hashable as Vertex
 
 class Graph:
     def __init__(self):
         self._vertices = {}
 
-    def add_vertex(self, v: Hashable) -> None:
+    def add_vertex(self, v: Vertex) -> None:
         """
         Adds the vertex v, if it is not there
         """
@@ -17,7 +14,7 @@ class Graph:
 
         self._vertices[v] = set()
 
-    def remove_vertex(self, v: Hashable) -> None:
+    def remove_vertex(self, v: Vertex) -> None:
         """
         Removes the vertex v, if it is there
         """
@@ -26,14 +23,14 @@ class Graph:
 
         del self._vertices[v]
 
-    def add_edge(self, v1: Hashable, v2: Hashable) -> None:
+    def add_edge(self, v1: Vertex, v2: Vertex) -> None:
         """
         Adds the edge from the vertices v1 to v2, if it is not there
         """
         self._vertices[v1].add(v2)
         self._vertices[v2].add(v1)
 
-    def remove_edge(self, v1: Hashable, v2: Hashable) -> None:
+    def remove_edge(self, v1: Vertex, v2: Vertex) -> None:
         """
         Removes the edge from the vertices v1 to v2, if it is there
         """
@@ -53,19 +50,19 @@ class Graph:
         """
         return set(self._vertices)
 
-    def rand_vertex(self) -> Hashable:
+    def rand_vertex(self) -> Vertex:
         """
         Returns a random vertex of the graph
         """
         return choice(tuple(self.vertices()))
 
-    def neighbors(self, v: Hashable) -> Set:
+    def neighbors(self, v: Vertex) -> Set:
         """
         Returns a set containing the neighbors of v
         """
         return set(self._vertices[v])
 
-    def degree(self, v: Hashable) -> int:
+    def degree(self, v: Vertex) -> int:
         """
         Returns the number of neighbors of v
         """
@@ -99,24 +96,24 @@ class Graph:
         """
         Return True if the graph is connected and has no cycles, False otherwise
         """
-        def cycle_with(v, v_anterior, ja_visitados=None):
+        def cycle_with(v, v_prev, visited=None):
             """
             Returns True if there is a cycle in the graph containing v,
             False otherwise
             """
-            ja_visitados = ja_visitados or set()
+            visited = visited or set()
 
-            if v in ja_visitados:
+            if v in visited:
                 return True
 
-            ja_visitados.add(v)
+            visited.add(v)
 
-            for v_adj in self.neighbors(v):
-                if v_adj != v_anterior:
-                    if cycle_with(v_adj, v, ja_visitados):
+            for v_neigh in self.neighbors(v):
+                if v_neigh != v_prev:
+                    if cycle_with(v_neigh, v, visited):
                         return True
 
-            ja_visitados.remove(v)
+            visited.remove(v)
 
             return False
 
@@ -124,17 +121,17 @@ class Graph:
 
         return self.is_connected() and not cycle_with(v, v)
 
-    def transitive_closure(self, v: Hashable,
-        ja_visitados: Optional[Set] = None) -> Set:
+    def transitive_closure(self, v: Vertex,
+        visited: Optional[Set] = None) -> Set:
         """
         Returns a set containing all vertices reachable from v
         """
-        ja_visitados = ja_visitados or set()
+        visited = visited or set()
 
-        ja_visitados.add(v)
+        visited.add(v)
 
-        for v_adj in self.neighbors(v):
-            if not v_adj in ja_visitados:
-                self.transitive_closure(v_adj, ja_visitados)
+        for v_neigh in self.neighbors(v):
+            if not v_neigh in visited:
+                self.transitive_closure(v_neigh, visited)
 
-        return ja_visitados
+        return visited

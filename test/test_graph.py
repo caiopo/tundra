@@ -1,6 +1,6 @@
 import unittest
 
-from graph import Graph, GraphException
+from context import Graph
 
 MAX_N = 100
 
