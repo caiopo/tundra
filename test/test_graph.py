@@ -61,6 +61,21 @@ class GraphTest(unittest.TestCase):
             msg='disconnecting inexistent vertices should raise an exception'):
             Graph().remove_edge(0, 1)
 
+
+    def test_get_weight(self):
+        for i in range(MAX_N):
+            self.g.add_edge(i, (i + 1) % MAX_N, i**3)
+            self.assertEqual(self.g.get_weight(i, (i + 1) % MAX_N), i**3)
+
+    def test_set_weight(self):
+        for i in range(MAX_N):
+            self.g.add_edge(i, (i + 1) % MAX_N, i**3)
+            self.assertEqual(self.g.get_weight(i, (i + 1) % MAX_N), i**3)
+
+        for i in range(MAX_N):
+            self.g.set_weight(i, (i + 1) % MAX_N, 2**i)
+            self.assertEqual(self.g.get_weight(i, (i + 1) % MAX_N), 2**i)
+
     def test_order(self):
         gr = Graph()
 
