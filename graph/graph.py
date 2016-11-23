@@ -1,9 +1,19 @@
 from random import choice
-from typing import Set, Optional, Hashable as Vertex
+from typing import Iterable, Tuple, Union, Dict, Set, Optional, Hashable as Vertex
 
 class Graph:
-    def __init__(self):
-        self._vertices = {}
+    def __init__(self, vertices: Iterable[Vertex] = None,
+        edges: Iterable[Tuple[Vertex, Vertex, Optional[int]]] = None) -> None:
+
+        self._vertices = {} # type: Dict[Vertex, Dict[Vertex, int]]
+
+        if vertices:
+            for v in vertices:
+                self.add_vertex(v)
+
+        if edges:
+            for e in edges:
+                self.add_edge(*e)
 
     def add_vertex(self, v: Vertex) -> None:
         """
@@ -12,7 +22,7 @@ class Graph:
         if v in self.vertices():
             raise KeyError('{} is already a vertex'.format(v))
 
-        self._vertices[v] = set()
+        self._vertices[v] = {}
 
     def remove_vertex(self, v: Vertex) -> None:
         """
@@ -23,20 +33,37 @@ class Graph:
 
         del self._vertices[v]
 
-    def add_edge(self, v1: Vertex, v2: Vertex) -> None:
+    def add_edge(self, v1: Vertex, v2: Vertex, weight: int = 1) -> None:
         """
         Adds the edge from the vertices v1 to v2, if it is not there
         """
-        self._vertices[v1].add(v2)
-        self._vertices[v2].add(v1)
+        if v1 not in self.neighbors(v2):
+            self._vertices[v1][v2] = weight
+            self._vertices[v2][v1] = weight
 
     def remove_edge(self, v1: Vertex, v2: Vertex) -> None:
         """
         Removes the edge from the vertices v1 to v2, if it is there
         """
-        self._vertices[v1].remove(v2)
+        del self._vertices[v1][v2]
         if v1 != v2:
-            self._vertices[v2].remove(v1)
+            del self._vertices[v2][v1]
+
+    def has_edge(self, v1: Vertex, v2: Vertex) -> bool:
+        return v1 in self.neighbors(v2)
+
+    def get_weight(self, v1: Vertex, v2: Vertex) -> int:
+        """
+        Returns the weight of the edge
+        """
+        return self._vertices[v1][v2]
+
+    def set_weight(self, v1: Vertex, v2: Vertex, weight: int) -> None:
+        """
+        Sets the weight of the edge
+        """
+        self._vertices[v1][v2] = weight
+        self._vertices[v2][v1] = weight
 
     def order(self) -> int:
         """
@@ -44,11 +71,23 @@ class Graph:
         """
         return len(self._vertices)
 
-    def vertices(self) -> Set:
+    def vertices(self) -> Set[Vertex]:
         """
         Returns a set containing the vertices of the graph
         """
         return set(self._vertices)
+
+    def edges(self) -> Set[Tuple[Vertex, Vertex, int]]:
+        """
+        Returns a set containing the edges of the graph
+        """
+        edges = set()
+
+        for v1 in self.vertices():
+            for v2 in self.neighbors(v1):
+                edges.add((min(v1, v2), max(v1, v2), self.get_weight(v1, v2)))
+
+        return edges
 
     def rand_vertex(self) -> Vertex:
         """
@@ -60,7 +99,7 @@ class Graph:
         """
         Returns a set containing the neighbors of v
         """
-        return set(self._vertices[v])
+        return set(self._vertices[v].keys())
 
     def degree(self, v: Vertex) -> int:
         """
@@ -135,3 +174,6 @@ class Graph:
                 self.transitive_closure(v_neigh, visited)
 
         return visited
+
+    def __str__(self):
+        return 'Graph({}, {})'.format(self.vertices(), self.edges())
