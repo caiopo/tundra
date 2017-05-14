@@ -18,11 +18,6 @@ g_dot_weighted = 'graph {} {{\n2 -- 3 [label="5"];' \
                   '\n1 -- 2 [label="5"];\n0 -- 1 [label="5"];\n}}'
 
 
-def file_equals(filename, string):
-    with open(filename) as f:
-        return f.read() == string
-
-
 def is_png(filename):
     result = run(['file', '--mime-type', filename], stdout=PIPE, check=True)
 
