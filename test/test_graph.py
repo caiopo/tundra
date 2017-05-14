@@ -5,7 +5,7 @@ from context import Graph
 MAX_N = 100
 
 
-class GraphTest(unittest.TestCase):
+class TestGraph(unittest.TestCase):
     def setUp(self):
         self.g = Graph(range(MAX_N))
 

@@ -1,36 +1,92 @@
 import unittest
+from subprocess import run, PIPE
+from tempfile import NamedTemporaryFile
 
-from context import Graph, fringe
+from context import Graph, to_dot, export_dot, export_png
+
+g_dot1 = 'graph .* {\n1 -- 2;\n0 -- 1;\n5 -- 6;\n' \
+       '6 -- 7;\n8 -- 9;\n3 -- 4;\n7 -- 8;\n4 -- 5;\n2 -- 3;\n}'
 
 
-class TestUtil(unittest.TestCase):
-    def test_fringe(self):
-        g = Graph(range(10))
+g_dot2 = 'graph .* {\n1 -- 2;\n0 -- 1;\n5 -- 6;\n' \
+         '6 -- 7;\n3 -- 4;\n7 -- 8;\n4 -- 5;\n2 -- 3;\n9;}'
 
-        g.add_edge(0, 1)
-        g.add_edge(0, 2)
-        g.add_edge(0, 3)
-        g.add_edge(0, 4)
+g_dot_weighted = 'graph {} {{\n2 -- 3 [label="5"];' \
+                  '\n7 -- 8 [label="5"];\n8 -- 9 [label="5"];' \
+                  '\n6 -- 7 [label="5"];\n4 -- 5 [label="5"];' \
+                  '\n5 -- 6 [label="5"];\n3 -- 4 [label="5"];' \
+                  '\n1 -- 2 [label="5"];\n0 -- 1 [label="5"];\n}}'
 
-        g.add_edge(1, 5)
-        g.add_edge(1, 6)
-        g.add_edge(1, 7)
-        g.add_edge(1, 8)
 
-        g.add_edge(2, 9)
+def file_equals(filename, string):
+    with open(filename) as f:
+        return f.read() == string
 
-        self.assertEqual(fringe(g, [0]), set(range(1, 5)))
 
-        self.assertEqual(fringe(g, [1]), {0} | set(range(5, 9)))
+def is_png(filename):
+    result = run(['file', '--mime-type', filename], stdout=PIPE, check=True)
 
-        self.assertEqual(fringe(g, [2]), {0, 9})
+    return result.stdout.decode('utf-8').split()[1] == 'image/png'
 
-        self.assertEqual(fringe(g, [0, 1]), set(range(2, 9)))
 
-        self.assertEqual(fringe(g, [0, 1, 2]), g.vertices - {0, 1, 2})
+class TestGraphviz(unittest.TestCase):
+    def setUp(self):
+        self.g = Graph(range(10), zip(range(9), range(1, 10)))
 
-    def test_fringe_raises(self):
-        g = Graph()
+    def test_to_dot(self):
+        self.assertRegex(to_dot(self.g), g_dot1)
 
-        with self.assertRaises(ValueError):
-            fringe(g, [0])
+        self.g.remove_edge(8, 9)
+
+        self.assertRegex(to_dot(self.g), g_dot2)
+
+    def test_weighted_dot(self):
+        g = Graph(range(10), zip(range(9), range(1, 10), [5] * 9))
+
+        self.assertEqual(to_dot(g), g_dot_weighted.format(hash(str(g))))
+
+    def test_export_dot(self):
+        with NamedTemporaryFile() as file:
+            export_dot(self.g, file.name)
+
+            self.assertRegex(file.read().decode('utf-8'), g_dot1)
+
+        self.g.remove_edge(8, 9)
+
+        with NamedTemporaryFile() as file:
+            export_dot(self.g, file.name)
+
+            self.assertRegex(file.read().decode('utf-8'), g_dot2)
+
+    def test_export_png(self):
+        with NamedTemporaryFile() as file:
+            export_png(self.g, file.name)
+
+            self.assertTrue(is_png(file.name))
+
+        for v1 in self.g.vertices:
+            for v2 in self.g.vertices:
+                if v1 != v2:
+                    self.g.add_edge(v1, v2)
+
+        self.assertTrue(self.g.is_complete())
+
+        with NamedTemporaryFile() as file:
+            export_png(self.g, file.name)
+
+            self.assertTrue(is_png(file.name))
+
+        self.g.remove_edge(0, 1)
+
+        with NamedTemporaryFile() as file:
+            export_png(self.g, file.name)
+
+            self.assertTrue(is_png(file.name))
+
+
+
+
+
+# graph .* {\n2 -- 3 [label="5"];\n7 -- 8 [label="5"];\n8 -- 9 [label="5"];\n6 -- 7 [label="5"];\n4 -- 5 [label="5"];\n5 -- 6 [label="5"];\n3 -- 4 [label="5"];\n1 -- 2 [label="5"];\n0 -- 1 [label="5"];\n}
+
+# graph -3061004388262148153 {\n2 -- 3 [label="5"];\n7 -- 8 [label="5"];\n8 -- 9 [label="5"];\n6 -- 7 [label="5"];\n4 -- 5 [label="5"];\n5 -- 6 [label="5"];\n3 -- 4 [label="5"];\n1 -- 2 [label="5"];\n0 -- 1 [label="5"];\n}

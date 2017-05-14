@@ -8,18 +8,16 @@ EdgeTuple = TypeVar('EdgeTuple', Tuple[Vertex, Vertex],
 
 class Graph:
     def __init__(self,
-                 vertices: Iterable[Vertex] = None,
-                 edges: Iterable[EdgeTuple] = None) -> None:
+                 vertices: Iterable[Vertex] = (),
+                 edges: Iterable[EdgeTuple] = ()) -> None:
 
         self._vertices = {}  # type: Dict[Vertex, Dict[Vertex, int]]
 
-        if vertices:
-            for v in vertices:
-                self.add_vertex(v)
+        for v in vertices:
+            self.add_vertex(v)
 
-        if edges:
-            for e in edges:
-                self.add_edge(*e)
+        for e in edges:
+            self.add_edge(*e)
 
     def add_vertex(self, v: Vertex) -> None:
         """
