@@ -1,0 +1,13 @@
+language: python
+
+python: '3.6'
+
+install:
+  - pip install coveralls mypy
+
+script:
+  - coverage run run_tests.py
+  - mypy graph/ test/
+
+after_success:
+  - coveralls

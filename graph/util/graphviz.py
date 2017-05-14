@@ -17,7 +17,7 @@ class Filter(Enum):
 
 
 def to_dot(g: Graph, name: str = 'graphname') -> str:
-    edges = g.edges()
+    edges = g.edges
 
     dot = 'graph ' + name + ' {\n'
 
