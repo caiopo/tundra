@@ -1,5 +1,5 @@
-from typing import Set, Hashable as Vertex
-from graph import Graph
+from typing import Set
+from graph import Graph, Vertex
 
 def depth_first_search(g: Graph, v: Vertex, visited: Set = None) -> bool:
     pass

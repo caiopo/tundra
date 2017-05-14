@@ -1,6 +1,10 @@
 import sys
-sys.path.append('..')
+from os import path
+
+BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
+
+sys.path.append(BASE_DIR)
 
 from graph import Graph
-from graph import algorithm
-from graph import util
+from graph.algorithm import *
+from graph.util import *

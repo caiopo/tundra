@@ -1,9 +1,13 @@
-from typing import Set, Hashable as Vertex
+from typing import Set, Iterable, Hashable as Vertex
 from graph import Graph
 
-def fringe(g: Graph, selected: Set[Vertex]) -> Set:
-    if not selected.issubset(g.vertices()):
-        raise ValueError('selected is not a subset of the graph\'s vertices')
+
+def fringe(g: Graph, selected: Iterable[Vertex]) -> Set[Vertex]:
+
+    selected = set(selected)
+
+    if not selected.issubset(g.vertices):
+        raise ValueError("selected is not a subset of the graph's vertices")
 
     fr = set()
 

@@ -1,11 +1,17 @@
 from random import choice
-from typing import Iterable, Tuple, Union, Dict, Set, Optional, Hashable as Vertex
+from typing import (Iterable, TypeVar, Union, Tuple,
+                    Dict, Set, Optional, Hashable, Hashable as Vertex)
+
+EdgeTuple = TypeVar('EdgeTuple', Tuple[Vertex, Vertex],
+                    Tuple[Vertex, Vertex, int])
+
 
 class Graph:
-    def __init__(self, vertices: Iterable[Vertex] = None,
-        edges: Iterable[Tuple[Vertex, Vertex, Optional[int]]] = None) -> None:
+    def __init__(self,
+                 vertices: Iterable[Vertex] = None,
+                 edges: Iterable[EdgeTuple] = None) -> None:
 
-        self._vertices = {} # type: Dict[Vertex, Dict[Vertex, int]]
+        self._vertices = {}  # type: Dict[Vertex, Dict[Vertex, int]]
 
         if vertices:
             for v in vertices:
@@ -17,16 +23,16 @@ class Graph:
 
     def add_vertex(self, v: Vertex) -> None:
         """
-        Adds the vertex v, if it is not there
+        Adds the vertex v, if it doesn't exists
         """
-        if v in self.vertices():
+        if v in self.vertices:
             raise KeyError('{} is already a vertex'.format(v))
 
         self._vertices[v] = {}
 
     def remove_vertex(self, v: Vertex) -> None:
         """
-        Removes the vertex v, if it is there
+        Removes the vertex v, if it exists
         """
         for v2 in self.neighbors(v):
             self.remove_edge(v, v2)
@@ -35,7 +41,7 @@ class Graph:
 
     def add_edge(self, v1: Vertex, v2: Vertex, weight: int = 1) -> None:
         """
-        Adds the edge from the vertices v1 to v2, if it is not there
+        Adds the edge from the vertices v1 to v2, if it doesn't exists
         """
         if v1 not in self.neighbors(v2):
             self._vertices[v1][v2] = weight
@@ -43,7 +49,7 @@ class Graph:
 
     def remove_edge(self, v1: Vertex, v2: Vertex) -> None:
         """
-        Removes the edge from the vertices v1 to v2, if it is there
+        Removes the edge from the vertices v1 to v2
         """
         del self._vertices[v1][v2]
         if v1 != v2:
@@ -65,37 +71,40 @@ class Graph:
         self._vertices[v1][v2] = weight
         self._vertices[v2][v1] = weight
 
+    @property
     def order(self) -> int:
         """
         Returns the number of vertices in the graph
         """
         return len(self._vertices)
 
+    @property
     def vertices(self) -> Set[Vertex]:
         """
         Returns a set containing the vertices of the graph
         """
         return set(self._vertices)
 
+    @property
     def edges(self) -> Set[Tuple[Vertex, Vertex, int]]:
         """
         Returns a set containing the edges of the graph
         """
         edges = set()
 
-        for v1 in self.vertices():
+        for v1 in self.vertices:
             for v2 in self.neighbors(v1):
                 edges.add((min(v1, v2), max(v1, v2), self.get_weight(v1, v2)))
 
         return edges
 
-    def rand_vertex(self) -> Vertex:
+    def random_vertex(self) -> Vertex:
         """
         Returns a random vertex of the graph
         """
-        return choice(tuple(self.vertices()))
+        return choice(tuple(self.vertices))
 
-    def neighbors(self, v: Vertex) -> Set:
+    def neighbors(self, v: Vertex) -> Set[Vertex]:
         """
         Returns a set containing the neighbors of v
         """
@@ -111,29 +120,30 @@ class Graph:
         """
         Return True if all vertices have the same degree, False otherwise
         """
-        degree = self.degree(self.rand_vertex())
+        degree = self.degree(self.random_vertex())
 
-        return all(self.degree(v) == degree for v in self.vertices())
+        return all(self.degree(v) == degree for v in self.vertices)
 
     def is_complete(self) -> bool:
         """
-        Return True if every vertex is connected to all other vertices,
+        Returns True if every vertex is connected to all other vertices,
         False otherwise
         """
-        degree = self.order() - 1
+        degree = self.order - 1
 
-        return all(self.degree(v) == degree for v in self.vertices())
+        return all(self.degree(v) == degree for v in self.vertices)
 
     def is_connected(self) -> bool:
         """
-        Return True if there is a path between every pair of vertices,
+        Returns True if there is a path between every pair of vertices,
         False otherwise
         """
-        return self.vertices() == self.transitive_closure(self.rand_vertex())
+        return self.vertices == self.transitive_closure(self.random_vertex())
 
     def is_tree(self) -> bool:
         """
-        Return True if the graph is connected and has no cycles, False otherwise
+        Returns True if the graph is connected and has no cycles,
+        False otherwise
         """
         def cycle_with(v, v_prev, visited=None):
             """
@@ -156,12 +166,13 @@ class Graph:
 
             return False
 
-        v = self.rand_vertex()
+        v = self.random_vertex()
 
         return self.is_connected() and not cycle_with(v, v)
 
-    def transitive_closure(self, v: Vertex,
-        visited: Optional[Set] = None) -> Set:
+    def transitive_closure(
+            self, v: Vertex,
+            visited: Optional[Set[Vertex]] = None) -> Set[Vertex]:
         """
         Returns a set containing all vertices reachable from v
         """
@@ -170,10 +181,10 @@ class Graph:
         visited.add(v)
 
         for v_neigh in self.neighbors(v):
-            if not v_neigh in visited:
+            if v_neigh not in visited:
                 self.transitive_closure(v_neigh, visited)
 
         return visited
 
-    def __str__(self):
-        return 'Graph({}, {})'.format(self.vertices(), self.edges())
+    def __str__(self) -> str:
+        return 'Graph({}, {})'.format(self.vertices, self.edges)
