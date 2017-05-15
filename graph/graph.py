@@ -143,30 +143,17 @@ class Graph:
         Returns True if the graph is connected and has no cycles,
         False otherwise
         """
-        def cycle_with(v, v_prev, visited=None):
-            """
-            Returns True if there is a cycle in the graph containing v,
-            False otherwise
-            """
-            visited = visited or set()
-
-            if v in visited:
-                return True
-
-            visited.add(v)
-
-            for v_neigh in self.neighbors(v):
-                if v_neigh != v_prev:
-                    if cycle_with(v_neigh, v, visited):
-                        return True
-
-            visited.remove(v)
-
-            return False
-
         v = self.random_vertex()
 
-        return self.is_connected() and not cycle_with(v, v)
+        return self.is_connected() and not self._cycle_with(v, v)
+
+    def has_cycle(self) -> bool:
+        """
+        Returns True if there is a cycle in the graph, False otherwise
+        """
+        v = self.random_vertex()
+
+        return self._cycle_with(v, v)
 
     def transitive_closure(
             self, v: Vertex,
@@ -184,5 +171,27 @@ class Graph:
 
         return visited
 
+    def _cycle_with(self, v, v_prev, visited=None):
+        """
+        Returns True if there is a cycle in the graph containing v,
+        False otherwise
+        """
+        visited = visited or set()
+
+        if v in visited:
+            return True
+
+        visited.add(v)
+
+        for v_neigh in self.neighbors(v):
+            if v_neigh != v_prev:
+                if self._cycle_with(v_neigh, v, visited):
+                    return True
+
+        visited.remove(v)
+
+        return False
+
     def __str__(self) -> str:
         return 'Graph({}, {})'.format(self.vertices, self.edges)
+

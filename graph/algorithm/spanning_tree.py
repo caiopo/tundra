@@ -4,6 +4,9 @@ from math import inf
 
 
 def prim(g: Graph) -> Graph:
+    """
+    Constructs a minimum spanning tree using Prim's algorithm
+    """
     cost = {v: inf for v in g.vertices}
     edge = {v: None for v in g.vertices}  # type: Dict[Vertex, Vertex]
 
@@ -34,5 +37,20 @@ def prim(g: Graph) -> Graph:
     return tree
 
 
-# def kruskal(g: Graph) -> Graph:
-#     pass
+def kruskal(g: Graph) -> Graph:
+    """
+    Constructs a minimum spanning tree using Kruskal's algorithm
+
+    g must not have parallel edges or loops
+    """
+    edges = sorted(g.edges, key=lambda e: e[2], reverse=True)
+
+    t = Graph(g.vertices)
+
+    while not t.is_connected():
+        v1, v2, w = edges.pop()
+
+        if v1 not in t.transitive_closure(v2):
+            t.add_edge(v1, v2, w)
+
+    return t

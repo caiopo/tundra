@@ -208,6 +208,22 @@ class TestGraph(unittest.TestCase):
 
         self.assertFalse(self.g.is_tree())
 
+    def test_cycle_true(self):
+        for v1 in self.g.vertices:
+            for v2 in self.g.vertices:
+                if v1 != v2:
+                    self.g.add_edge(v1, v2, (v1+v2) % 5)
+
+        self.assertTrue(self.g.has_cycle())
+
+    def test_cycle_false(self):
+        vertices = list(self.g.vertices)
+
+        for v1, v2 in zip(vertices, vertices[1:]):
+            self.g.add_edge(v1, v2, (v1+v2) % 5)
+
+        self.assertFalse(self.g.has_cycle())
+
     def test_transitive_closure(self):
         for i in range(MAX_N):
             self.assertEqual(self.g.transitive_closure(i), {i})
