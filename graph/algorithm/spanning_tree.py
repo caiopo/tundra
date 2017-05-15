@@ -41,16 +41,23 @@ def kruskal(g: Graph) -> Graph:
     """
     Constructs a minimum spanning tree using Kruskal's algorithm
 
-    g must not have parallel edges or loops
+    The input graph must not have parallel edges or loops
     """
+    for v1, v2, _ in g.edges:
+        if v1 == v2:
+            raise ValueError("g can't have loops")
+
     edges = sorted(g.edges, key=lambda e: e[2], reverse=True)
 
     t = Graph(g.vertices)
 
-    while not t.is_connected():
+    n_edges = 0
+
+    while t.order - 1 > n_edges:
         v1, v2, w = edges.pop()
 
         if v1 not in t.transitive_closure(v2):
             t.add_edge(v1, v2, w)
+            n_edges += 1
 
     return t
