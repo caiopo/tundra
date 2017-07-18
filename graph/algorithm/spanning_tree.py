@@ -21,8 +21,8 @@ def prim(g: Graph) -> Graph:
                                                     key=lambda t: t[1])
 
         for v in g.neighbors(current_vertex):
-            if v in cost and g.get_weight(v, current_vertex) < cost[v]:
-                cost[v] = g.get_weight(v, current_vertex)
+            if v in cost and g.weight[v, current_vertex] < cost[v]:
+                cost[v] = g.weight[v, current_vertex]
                 edge[v] = current_vertex
 
         tree.add_vertex(current_vertex)

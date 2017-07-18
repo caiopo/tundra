@@ -6,12 +6,28 @@ EdgeTuple = TypeVar('EdgeTuple', Tuple[Vertex, Vertex],
                     Tuple[Vertex, Vertex, int])
 
 
+class Weight:
+    def __init__(self, _vertices: Dict[Vertex, Dict[Vertex, int]]) -> None:
+        self._vertices = _vertices
+
+    def __getitem__(self, item: Tuple[Vertex, Vertex]) -> int:
+        v1, v2 = item
+        return self._vertices[v1][v2]
+
+    def __setitem__(self, item: Tuple[Vertex, Vertex], weight: int):
+        v1, v2 = item
+        self._vertices[v1][v2] = weight
+        self._vertices[v2][v1] = weight
+
+
 class Graph:
     def __init__(self,
                  vertices: Iterable[Vertex] = (),
                  edges: Iterable[EdgeTuple] = ()) -> None:
 
-        self._vertices = {}  # type: Dict[Vertex, Dict[Vertex, int]]
+        self._vertices: Dict[Vertex, Dict[Vertex, int]] = {}
+
+        self.weight: Weight = Weight(self._vertices)
 
         for v in vertices:
             self.add_vertex(v)
@@ -54,20 +70,10 @@ class Graph:
             del self._vertices[v2][v1]
 
     def has_edge(self, v1: Vertex, v2: Vertex) -> bool:
+        """
+        Return True if there is an edge between v1 and v2, False otherwise
+        """
         return v1 in self.neighbors(v2)
-
-    def get_weight(self, v1: Vertex, v2: Vertex) -> int:
-        """
-        Returns the weight of the edge
-        """
-        return self._vertices[v1][v2]
-
-    def set_weight(self, v1: Vertex, v2: Vertex, weight: int) -> None:
-        """
-        Sets the weight of the edge
-        """
-        self._vertices[v1][v2] = weight
-        self._vertices[v2][v1] = weight
 
     @property
     def order(self) -> int:
@@ -92,7 +98,7 @@ class Graph:
 
         for v1 in self.vertices:
             for v2 in self.neighbors(v1):
-                edges.add((min(v1, v2), max(v1, v2), self.get_weight(v1, v2)))
+                edges.add((min(v1, v2), max(v1, v2), self.weight[v1, v2]))
 
         return edges
 

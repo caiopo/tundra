@@ -20,7 +20,7 @@ def _dijkstra(g: Graph, start: Vertex):
         unvisited.remove(current)
 
         for n in g.neighbors(current):
-            distn = distance[current] + g.get_weight(current, n)
+            distn = distance[current] + g.weight[current, n]
 
             if distn < distance[n]:
                 distance[n] = distn
