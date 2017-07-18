@@ -25,11 +25,11 @@ def prim(g: Graph) -> Graph:
                 cost[v] = g.weight[v, current_vertex]
                 edge[v] = current_vertex
 
-        tree.add_vertex(current_vertex)
+        tree.insert(current_vertex)
 
         if current_cost != inf:
-            tree.add_edge(current_vertex, edge[current_vertex],
-                          cast(int, current_cost))
+            tree.link(current_vertex, edge[current_vertex],
+                      cast(int, current_cost))
 
         del edge[current_vertex]
         del cost[current_vertex]
@@ -58,7 +58,7 @@ def kruskal(g: Graph) -> Graph:
         v1, v2, w = edges.pop()
 
         if v1 not in t.transitive_closure(v2):
-            t.add_edge(v1, v2, w)
+            t.link(v1, v2, w)
             n_edges += 1
 
     return t

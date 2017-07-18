@@ -9,12 +9,12 @@ class TestAlgorithm(unittest.TestCase):
 
         for v in g.vertices:
             if v != 0:
-                g.add_edge(0, v, 5)
+                g.link(0, v, 5)
 
         for v1 in g.vertices:
             for v2 in g.vertices:
                 if v1 != v2 and not g.has_edge(v1, v2):
-                    g.add_edge(v1, v2, 10)
+                    g.link(v1, v2, 10)
 
         tree = prim(g)
 
@@ -27,12 +27,12 @@ class TestAlgorithm(unittest.TestCase):
 
         for v in g.vertices:
             if v != 0:
-                g.add_edge(0, v, 5)
+                g.link(0, v, 5)
 
         for v1 in g.vertices:
             for v2 in g.vertices:
                 if v1 != v2 and not g.has_edge(v1, v2):
-                    g.add_edge(v1, v2, 10)
+                    g.link(v1, v2, 10)
 
         tree = kruskal(g)
 
@@ -44,12 +44,12 @@ class TestAlgorithm(unittest.TestCase):
         g = Graph(range(10))
 
         for v in g.vertices:
-            g.add_edge(0, v, 5)
+            g.link(0, v, 5)
 
         for v1 in g.vertices:
             for v2 in g.vertices:
                 if v1 != v2 and not g.has_edge(v1, v2):
-                    g.add_edge(v1, v2, 10)
+                    g.link(v1, v2, 10)
 
         with self.assertRaises(ValueError):
             tree = kruskal(g)
@@ -77,17 +77,17 @@ class TestAlgorithm(unittest.TestCase):
     def test_fringe(self):
         g = Graph(range(10))
 
-        g.add_edge(0, 1)
-        g.add_edge(0, 2)
-        g.add_edge(0, 3)
-        g.add_edge(0, 4)
+        g.link(0, 1)
+        g.link(0, 2)
+        g.link(0, 3)
+        g.link(0, 4)
 
-        g.add_edge(1, 5)
-        g.add_edge(1, 6)
-        g.add_edge(1, 7)
-        g.add_edge(1, 8)
+        g.link(1, 5)
+        g.link(1, 6)
+        g.link(1, 7)
+        g.link(1, 8)
 
-        g.add_edge(2, 9)
+        g.link(2, 9)
 
         self.assertEqual(fringe(g, [0]), set(range(1, 5)))
 

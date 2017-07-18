@@ -31,7 +31,7 @@ class TestGraphviz(unittest.TestCase):
     def test_to_dot(self):
         self.assertRegex(to_dot(self.g), g_dot1)
 
-        self.g.remove_edge(8, 9)
+        self.g.unlink(8, 9)
 
         self.assertRegex(to_dot(self.g), g_dot2)
 
@@ -46,7 +46,7 @@ class TestGraphviz(unittest.TestCase):
 
             self.assertRegex(file.read().decode('utf-8'), g_dot1)
 
-        self.g.remove_edge(8, 9)
+        self.g.unlink(8, 9)
 
         with NamedTemporaryFile() as file:
             export_dot(self.g, file.name)
@@ -62,7 +62,7 @@ class TestGraphviz(unittest.TestCase):
         for v1 in self.g.vertices:
             for v2 in self.g.vertices:
                 if v1 != v2:
-                    self.g.add_edge(v1, v2)
+                    self.g.link(v1, v2)
 
         self.assertTrue(self.g.is_complete())
 
@@ -71,7 +71,7 @@ class TestGraphviz(unittest.TestCase):
 
             self.assertTrue(is_png(file.name))
 
-        self.g.remove_edge(0, 1)
+        self.g.unlink(0, 1)
 
         with NamedTemporaryFile() as file:
             export_png(self.g, file.name)

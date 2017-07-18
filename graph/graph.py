@@ -30,12 +30,12 @@ class Graph:
         self.weight: Weight = Weight(self._vertices)
 
         for v in vertices:
-            self.add_vertex(v)
+            self.insert(v)
 
         for e in edges:
-            self.add_edge(*e)
+            self.link(*e)
 
-    def add_vertex(self, v: Vertex) -> None:
+    def insert(self, v: Vertex) -> None:
         """
         Adds the vertex v, if it doesn't exists
         """
@@ -44,16 +44,16 @@ class Graph:
 
         self._vertices[v] = {}
 
-    def remove_vertex(self, v: Vertex) -> None:
+    def remove(self, v: Vertex) -> None:
         """
         Removes the vertex v, if it exists
         """
         for v2 in self.neighbors(v):
-            self.remove_edge(v, v2)
+            self.unlink(v, v2)
 
         del self._vertices[v]
 
-    def add_edge(self, v1: Vertex, v2: Vertex, weight: int = 1) -> None:
+    def link(self, v1: Vertex, v2: Vertex, weight: int = 1) -> None:
         """
         Adds the edge from the vertices v1 to v2, if it doesn't exists
         """
@@ -61,7 +61,7 @@ class Graph:
             self._vertices[v1][v2] = weight
             self._vertices[v2][v1] = weight
 
-    def remove_edge(self, v1: Vertex, v2: Vertex) -> None:
+    def unlink(self, v1: Vertex, v2: Vertex) -> None:
         """
         Removes the edge from the vertices v1 to v2
         """
@@ -94,19 +94,11 @@ class Graph:
         """
         Returns a set containing the edges of the graph
         """
-        edges = set()
-
-        for v1 in self.vertices:
-            for v2 in self.neighbors(v1):
-                edges.add((min(v1, v2), max(v1, v2), self.weight[v1, v2]))
-
-        return edges
-
-    def random_vertex(self) -> Vertex:
-        """
-        Returns a random vertex of the graph
-        """
-        return choice(tuple(self.vertices))
+        return {
+            (min(v1, v2), max(v1, v2), self.weight[v1, v2])
+            for v1 in self.vertices
+            for v2 in self.neighbors(v1)
+        }
 
     def neighbors(self, v: Vertex) -> Set[Vertex]:
         """
@@ -124,7 +116,7 @@ class Graph:
         """
         Return True if all vertices have the same degree, False otherwise
         """
-        degree = self.degree(self.random_vertex())
+        degree = self.degree(self._random_vertex())
 
         return all(self.degree(v) == degree for v in self.vertices)
 
@@ -142,14 +134,14 @@ class Graph:
         Returns True if there is a path between every pair of vertices,
         False otherwise
         """
-        return self.vertices == self.transitive_closure(self.random_vertex())
+        return self.vertices == self.transitive_closure(self._random_vertex())
 
     def is_tree(self) -> bool:
         """
         Returns True if the graph is connected and has no cycles,
         False otherwise
         """
-        v = self.random_vertex()
+        v = self._random_vertex()
 
         return self.is_connected() and not self._cycle_with(v, v)
 
@@ -157,7 +149,7 @@ class Graph:
         """
         Returns True if there is a cycle in the graph, False otherwise
         """
-        v = self.random_vertex()
+        v = self._random_vertex()
 
         return self._cycle_with(v, v)
 
@@ -197,6 +189,12 @@ class Graph:
         visited.remove(v)
 
         return False
+
+    def _random_vertex(self) -> Vertex:
+        """
+        Returns a random vertex of the graph
+        """
+        return choice(tuple(self.vertices))
 
     def __str__(self) -> str:
         return f'Graph({self.vertices}, {self.edges})'
