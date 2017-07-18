@@ -193,5 +193,4 @@ class Graph:
         return False
 
     def __str__(self) -> str:
-        return 'Graph({}, {})'.format(self.vertices, self.edges)
-
+        return f'Graph({self.vertices}, {self.edges})'

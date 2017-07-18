@@ -1,14 +1,15 @@
-from typing import Dict, cast
-from graph import Graph, Vertex
 from math import inf
+from typing import Dict, cast
+
+from graph import Graph, Vertex
 
 
 def prim(g: Graph) -> Graph:
     """
     Constructs a minimum spanning tree using Prim's algorithm
     """
-    cost = {v: inf for v in g.vertices}
-    edge = {v: None for v in g.vertices}  # type: Dict[Vertex, Vertex]
+    cost: Dict[Vertex, float] = {v: inf for v in g.vertices}
+    edge: Dict[Vertex, Vertex] = {v: None for v in g.vertices}
 
     tree = Graph()
 
@@ -16,8 +17,8 @@ def prim(g: Graph) -> Graph:
 
     while vertices_left:
         # find the vertex in the fringe with the minimal cost
-        current_vertex, current_cost = sorted(cost.items(),
-                                              key=lambda t: t[1])[0]
+        (current_vertex, current_cost), *_ = sorted(cost.items(),
+                                                    key=lambda t: t[1])
 
         for v in g.neighbors(current_vertex):
             if v in cost and g.get_weight(v, current_vertex) < cost[v]:

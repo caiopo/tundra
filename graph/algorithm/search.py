@@ -1,5 +1,5 @@
 from collections import deque
-from typing import Set, Callable, TypeVar, Optional, Any
+from typing import Callable, Deque, Optional, Set
 
 from graph import Graph, Vertex
 
@@ -30,7 +30,7 @@ def dfs(g: Graph, current: Vertex, condition: Test,
 
 def bfs(g: Graph, start: Vertex,
         condition: Test) -> Optional[Vertex]:
-    deq = deque()  # type: Any
+    deq: Deque[Vertex] = deque()
     visited = set()
 
     deq.append(start)

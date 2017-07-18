@@ -1,4 +1,6 @@
-from typing import Set, Iterable, Hashable as Vertex
+from typing import Hashable as Vertex
+from typing import Iterable, Set
+
 from graph import Graph
 
 
