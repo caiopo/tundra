@@ -25,23 +25,23 @@ def to_dot(g: Graph, name: str = None, to_str: VertexToString = str,
 
     name = name or str(hash(str(g)))
 
-    dot = 'graph ' + name + ' {\n'
+    dot = ['graph ', name, ' {\n']
 
     for v1, v2, w in g.edges:
-        dot += to_str(v1) + ' -- ' + to_str(v2)
+        dot += [to_str(v1), ' -- ', to_str(v2)]
 
         if w != 1 or force_weight:
-            dot += ' [label="{}"]'.format(str(w))
+            dot.append(f' [label="{str(w)}"]')
 
-        dot += ';\n'
+        dot.append(';\n')
 
     for v in g.vertices:
         if len(g.neighbors(v)) == 0:
-            dot += to_str(v) + ';'
+            dot += [to_str(v), ';']
 
-    dot += '}'
+    dot.append('}')
 
-    return dot
+    return ''.join(dot)
 
 
 def export_dot(g: Graph, filename: str):
