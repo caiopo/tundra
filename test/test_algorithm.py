@@ -1,6 +1,6 @@
 import unittest
 
-from context import Graph, prim, kruskal, dfs, bfs, fringe
+from context import Graph, bfs, dfs, fringe, kruskal, prim
 
 
 class TestAlgorithm(unittest.TestCase):
@@ -104,4 +104,3 @@ class TestAlgorithm(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             fringe(g, [0])
-

@@ -1,21 +1,21 @@
 import unittest
-from subprocess import run, PIPE
+from subprocess import PIPE, run
 from tempfile import NamedTemporaryFile
 
-from context import Graph, to_dot, export_dot, export_png
+from context import Graph, export_dot, export_png, to_dot
 
 g_dot1 = 'graph .* {\n1 -- 2;\n0 -- 1;\n5 -- 6;\n' \
-       '6 -- 7;\n8 -- 9;\n3 -- 4;\n7 -- 8;\n4 -- 5;\n2 -- 3;\n}'
+    '6 -- 7;\n8 -- 9;\n3 -- 4;\n7 -- 8;\n4 -- 5;\n2 -- 3;\n}'
 
 
 g_dot2 = 'graph .* {\n1 -- 2;\n0 -- 1;\n5 -- 6;\n' \
          '6 -- 7;\n3 -- 4;\n7 -- 8;\n4 -- 5;\n2 -- 3;\n9;}'
 
 g_dot_weighted = 'graph {} {{\n2 -- 3 [label="5"];' \
-                  '\n7 -- 8 [label="5"];\n8 -- 9 [label="5"];' \
-                  '\n6 -- 7 [label="5"];\n4 -- 5 [label="5"];' \
-                  '\n5 -- 6 [label="5"];\n3 -- 4 [label="5"];' \
-                  '\n1 -- 2 [label="5"];\n0 -- 1 [label="5"];\n}}'
+    '\n7 -- 8 [label="5"];\n8 -- 9 [label="5"];' \
+    '\n6 -- 7 [label="5"];\n4 -- 5 [label="5"];' \
+    '\n5 -- 6 [label="5"];\n3 -- 4 [label="5"];' \
+    '\n1 -- 2 [label="5"];\n0 -- 1 [label="5"];\n}}'
 
 
 def is_png(filename):
@@ -77,11 +77,3 @@ class TestGraphviz(unittest.TestCase):
             export_png(self.g, file.name)
 
             self.assertTrue(is_png(file.name))
-
-
-
-
-
-# graph .* {\n2 -- 3 [label="5"];\n7 -- 8 [label="5"];\n8 -- 9 [label="5"];\n6 -- 7 [label="5"];\n4 -- 5 [label="5"];\n5 -- 6 [label="5"];\n3 -- 4 [label="5"];\n1 -- 2 [label="5"];\n0 -- 1 [label="5"];\n}
-
-# graph -3061004388262148153 {\n2 -- 3 [label="5"];\n7 -- 8 [label="5"];\n8 -- 9 [label="5"];\n6 -- 7 [label="5"];\n4 -- 5 [label="5"];\n5 -- 6 [label="5"];\n3 -- 4 [label="5"];\n1 -- 2 [label="5"];\n0 -- 1 [label="5"];\n}

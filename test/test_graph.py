@@ -212,7 +212,7 @@ class TestGraph(unittest.TestCase):
         for v1 in self.g.vertices:
             for v2 in self.g.vertices:
                 if v1 != v2:
-                    self.g.add_edge(v1, v2, (v1+v2) % 5)
+                    self.g.add_edge(v1, v2, (v1 + v2) % 5)
 
         self.assertTrue(self.g.has_cycle())
 
@@ -220,7 +220,7 @@ class TestGraph(unittest.TestCase):
         vertices = list(self.g.vertices)
 
         for v1, v2 in zip(vertices, vertices[1:]):
-            self.g.add_edge(v1, v2, (v1+v2) % 5)
+            self.g.add_edge(v1, v2, (v1 + v2) % 5)
 
         self.assertFalse(self.g.has_cycle())
 
@@ -259,4 +259,3 @@ class TestGraph(unittest.TestCase):
         g.add_edge(0, 1, 5)
 
         self.assertEqual(str(g), 'Graph({0, 1}, {(0, 1, 5)})')
-
