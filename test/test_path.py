@@ -1,6 +1,6 @@
 import unittest
 
-from context import Graph, shortest_distance, dijkstra
+from context import Graph, shortest_distance, dijkstra, floyd_warshall
 
 
 class TestAlgorithm(unittest.TestCase):
@@ -52,3 +52,9 @@ class TestAlgorithm(unittest.TestCase):
         self.assertEqual(dijkstra(self.g2, 4, 0), [4, 5, 6, 7, 0])
 
         self.assertEqual(dijkstra(self.g2, 3, 0), [3, 2, 1, 0])
+
+    def test_floyd_warshall(self):
+        fw1 = floyd_warshall(self.g1)
+
+        for v in self.g1.vertices:
+            self.assertEqual(fw1[v], shortest_distance(self.g1, v))

@@ -1,5 +1,5 @@
 from math import inf
-from typing import Dict, Set, Optional, List
+from typing import Dict, List, Optional, Set, Tuple
 
 from graph import Graph, Vertex
 
@@ -50,3 +50,28 @@ def dijkstra(g: Graph, start: Vertex, end: Vertex) -> List[Vertex]:
     path.append(current)
 
     return list(reversed(path))
+
+
+def floyd_warshall(g: Graph) -> Dict[Vertex, Dict[Vertex, float]]:
+    dist: Dict[Vertex, Dict[Vertex, float]] = {}
+
+    vertices = g.vertices
+
+    for v1 in vertices:
+        dist[v1] = {}
+
+        for v2 in vertices:
+            if v1 is v2:
+                dist[v1][v2] = 0
+            elif g.has_edge(v1, v2):
+                dist[v1][v2] = g.weight[v1, v2]
+            else:
+                dist[v1][v2] = inf
+
+    for k in vertices:
+        for i in vertices:
+            for j in vertices:
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+
+    return dist
