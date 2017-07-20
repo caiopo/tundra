@@ -7,4 +7,5 @@ sys.path.append(BASE_DIR)
 
 from graph import Graph
 from graph.algorithm import *
+from graph.factory import *
 from graph.util import *
