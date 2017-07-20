@@ -1,6 +1,9 @@
 from random import choice
 from typing import (Iterable, TypeVar, Union, Tuple,
-                    Dict, Set, Optional, Hashable, Hashable as Vertex)
+                    Dict, Set, Optional, Hashable)
+
+
+Vertex = Union[Hashable, int]
 
 EdgeTuple = TypeVar('EdgeTuple', Tuple[Vertex, Vertex],
                     Tuple[Vertex, Vertex, int])
@@ -16,6 +19,12 @@ class Weight:
 
     def __setitem__(self, item: Tuple[Vertex, Vertex], weight: int):
         v1, v2 = item
+
+        if v1 not in self._vertices[v2]:
+            raise KeyError(
+                f'{v1} and {v2} are not neighbors'
+            )
+
         self._vertices[v1][v2] = weight
         self._vertices[v2][v1] = weight
 
@@ -198,3 +207,6 @@ class Graph:
 
     def __str__(self) -> str:
         return f'Graph({self.vertices}, {self.edges})'
+
+    def __eq__(self, other) -> bool:
+        return self.vertices == other.vertices and self.edges == other.edges

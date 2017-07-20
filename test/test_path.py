@@ -3,7 +3,7 @@ import unittest
 from context import Graph, shortest_distance, dijkstra, floyd_warshall
 
 
-class TestAlgorithm(unittest.TestCase):
+class TestPath(unittest.TestCase):
     def setUp(self):
         self.g1 = Graph(
             range(1, 5),

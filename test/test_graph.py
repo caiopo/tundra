@@ -92,6 +92,17 @@ class TestGraph(unittest.TestCase):
             self.g.weight[i, (i + 1) % MAX_N] = 2**i
             self.assertEqual(self.g.weight[i, (i + 1) % MAX_N], 2**i)
 
+    def test_set_weight_raises(self):
+        g = Graph(
+            range(5)
+        )
+
+        with self.assertRaises(KeyError):
+            g.weight[1, 2] = 5
+
+        with self.assertRaises(KeyError):
+            g.weight[42, 2] = 5
+
     def test_order(self):
         gr = Graph()
 

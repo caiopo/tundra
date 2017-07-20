@@ -1,7 +1,6 @@
-from typing import Hashable as Vertex
 from typing import Iterable, Set
 
-from graph import Graph
+from graph import Graph, Vertex
 
 
 def fringe(g: Graph, selected: Iterable[Vertex]) -> Set[Vertex]:

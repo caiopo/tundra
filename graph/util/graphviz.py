@@ -1,4 +1,4 @@
-from enum import Enum
+# from enum import Enum
 from os import remove
 from subprocess import run, PIPE
 from tempfile import mkstemp
@@ -7,7 +7,8 @@ from typing import Callable
 from graph import Graph, Vertex
 
 
-class Filter(Enum):
+# class Filter(Enum):
+class Filter:
     DOT = 'dot'
     NEATO = 'neato'
     TWOPI = 'twopi'
@@ -51,7 +52,7 @@ def export_dot(g: Graph, filename: str):
         file.write(dot)
 
 
-def export_png(g: Graph, filename: str, command: Filter = None):
+def export_png(g: Graph, filename: str, command: str = None):
     dot = to_dot(g)
 
     if not command:
@@ -60,9 +61,9 @@ def export_png(g: Graph, filename: str, command: Filter = None):
         elif g.is_complete():
             command = Filter.CIRCO
         else:
-            command = Filter.FDP
+            command = Filter.SFDP
 
-    proc = run([command.value, '-Tpng'], input=dot.encode('utf-8'),
+    proc = run([command, '-Tpng'], input=dot.encode('utf-8'),
                stdout=PIPE, check=True)
 
     with open(filename, 'wb') as file:
