@@ -29,7 +29,7 @@ def to_dot(g: Graph, name: str = None, to_str: VertexToString = str,
     dot = ['graph ', name, ' {\n']
 
     for v1, v2, w in g.edges:
-        dot += [to_str(v1), ' -- ', to_str(v2)]
+        dot += ['"', to_str(v1), '" -- "', to_str(v2), '"']
 
         if w != 1 or force_weight:
             dot.append(f' [label="{str(w)}"]')
@@ -38,22 +38,24 @@ def to_dot(g: Graph, name: str = None, to_str: VertexToString = str,
 
     for v in g.vertices:
         if len(g.neighbors(v)) == 0:
-            dot += [to_str(v), ';']
+            dot += ['"', to_str(v), '";']
 
     dot.append('}')
 
     return ''.join(dot)
 
 
-def export_dot(g: Graph, filename: str):
-    dot = to_dot(g)
+def export_dot(g: Graph, filename: str, to_str: VertexToString = str):
+    dot = to_dot(g, to_str=to_str)
 
     with open(filename, 'w') as file:
         file.write(dot)
 
 
-def export_png(g: Graph, filename: str, command: str = None):
-    dot = to_dot(g)
+def export_png(g: Graph, filename: str, to_str: VertexToString = str,
+               command: str = None):
+
+    dot = to_dot(g, to_str=to_str)
 
     if not command:
         if g.is_tree():
