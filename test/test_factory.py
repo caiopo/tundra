@@ -1,4 +1,4 @@
-import unittest
+import pytest
 from itertools import product
 
 from context import Graph, biclique, complete, crown, lattice
@@ -49,114 +49,117 @@ lattice_test4 = Graph(
 )
 
 
-class TestColoring(unittest.TestCase):
-    def test_complete(self):
-        for size in range(20):
-            g = complete(size)
+def test_complete():
+    for size in range(20):
+        g = complete(size)
 
-            for v1, v2 in product(g.vertices, g.vertices):
-                self.assertEqual(g.has_edge(v1, v2), v1 is not v2)
+        for v1, v2 in product(g.vertices, g.vertices):
+            assert g.has_edge(v1, v2) == (v1 is not v2)
 
-    def test_biclique(self):
-        sizes = list(range(21))
 
-        for s1, s2 in product(sizes, sizes):
-            vertices1 = set(range(s1))
-            vertices2 = set(range(s1, s1 + s2 + 1))
+def test_biclique():
+    sizes = list(range(21))
 
-            g = biclique(vertices1, vertices2)
+    for s1, s2 in product(sizes, sizes):
+        vertices1 = set(range(s1))
+        vertices2 = set(range(s1, s1 + s2 + 1))
 
-            for v1 in vertices1:
-                self.assertEqual(g.neighbors(v1), vertices2)
+        g = biclique(vertices1, vertices2)
 
-            for v2 in vertices2:
-                self.assertEqual(g.neighbors(v2), vertices1)
+        for v1 in vertices1:
+            assert g.neighbors(v1) == vertices2
 
-    def test_crown(self):
-        sizes = list(range(21))
+        for v2 in vertices2:
+            assert g.neighbors(v2) == vertices1
 
-        for size in range(1, 21):
-            vertices1 = list(range(size))
-            vertices2 = list(range(size, 2 * size))
 
-            g = crown(vertices1, vertices2)
+def test_crown():
+    sizes = list(range(21))
 
-            for i, v1 in enumerate(vertices1):
-                neigh2 = set(vertices2) - {vertices2[i]}
+    for size in range(1, 21):
+        vertices1 = list(range(size))
+        vertices2 = list(range(size, 2 * size))
 
-                self.assertEqual(g.neighbors(v1), neigh2)
+        g = crown(vertices1, vertices2)
 
-            for i, v2 in enumerate(vertices2):
-                neigh1 = set(vertices1) - {vertices1[i]}
+        for i, v1 in enumerate(vertices1):
+            neigh2 = set(vertices2) - {vertices2[i]}
 
-                self.assertEqual(g.neighbors(v2), neigh1)
+            assert g.neighbors(v1) == neigh2
 
-    def test_crown_raises(self):
-        with self.assertRaises(ValueError):
-            crown(1, 2)
+        for i, v2 in enumerate(vertices2):
+            neigh1 = set(vertices1) - {vertices1[i]}
 
-        with self.assertRaises(ValueError):
-            crown(1000, 6)
+            assert g.neighbors(v2) == neigh1
 
-        with self.assertRaises(ValueError):
-            crown(300, 301)
 
-        with self.assertRaises(ValueError):
-            crown(-1, 2)
+def test_crown_raises():
+    with pytest.raises(ValueError):
+        crown(1, 2)
 
-        with self.assertRaises(ValueError):
-            crown(10, -1)
+    with pytest.raises(ValueError):
+        crown(1000, 6)
 
-        with self.assertRaises(ValueError):
-            crown(-42, -1)
+    with pytest.raises(ValueError):
+        crown(300, 301)
 
-    def test_lattice(self):
-        g1 = lattice(25)
+    with pytest.raises(ValueError):
+        crown(-1, 2)
 
-        self.assertEqual(g1, lattice_test1)
+    with pytest.raises(ValueError):
+        crown(10, -1)
 
-        g2 = lattice(20, height=10)
-        self.assertEqual(g2, lattice_test2)
+    with pytest.raises(ValueError):
+        crown(-42, -1)
 
-        g3 = lattice(15, width=5)
-        self.assertEqual(g3, lattice_test3)
 
-        g4 = lattice(10, width=5, height=2)
-        self.assertEqual(g4, lattice_test4)
+def test_lattice():
+    g1 = lattice(25)
+    assert g1 == lattice_test1
 
-    def test_lattice_raises(self):
-        with self.assertRaises(ValueError):
-            lattice(3)
+    g2 = lattice(20, height=10)
+    assert g2 == lattice_test2
 
-        with self.assertRaises(ValueError):
-            lattice(range(3))
+    g3 = lattice(15, width=5)
+    assert g3 == lattice_test3
 
-        with self.assertRaises(ValueError):
-            lattice(10, width=6)
+    g4 = lattice(10, width=5, height=2)
+    assert g4 == lattice_test4
 
-        with self.assertRaises(ValueError):
-            lattice(10, height=6)
 
-        with self.assertRaises(ValueError):
-            lattice(width=0, height=10)
+def test_lattice_raises():
+    with pytest.raises(ValueError):
+        lattice(3)
 
-        with self.assertRaises(ValueError):
-            lattice(width=10, height=0)
+    with pytest.raises(ValueError):
+        lattice(range(3))
 
-        with self.assertRaises(ValueError):
-            lattice(-42)
+    with pytest.raises(ValueError):
+        lattice(10, width=6)
 
-        with self.assertRaises(ValueError):
-            lattice(width=0, height=0)
+    with pytest.raises(ValueError):
+        lattice(10, height=6)
 
-        with self.assertRaises(ValueError):
-            lattice(width=10)
+    with pytest.raises(ValueError):
+        lattice(width=0, height=10)
 
-        with self.assertRaises(ValueError):
-            lattice(20, width=0)
+    with pytest.raises(ValueError):
+        lattice(width=10, height=0)
 
-        with self.assertRaises(ValueError):
-            lattice(20, height=0)
+    with pytest.raises(ValueError):
+        lattice(-42)
 
-        with self.assertRaises(ValueError):
-            lattice(20, width=3, height=10,)
+    with pytest.raises(ValueError):
+        lattice(width=0, height=0)
+
+    with pytest.raises(ValueError):
+        lattice(width=10)
+
+    with pytest.raises(ValueError):
+        lattice(20, width=0)
+
+    with pytest.raises(ValueError):
+        lattice(20, height=0)
+
+    with pytest.raises(ValueError):
+        lattice(20, width=3, height=10,)

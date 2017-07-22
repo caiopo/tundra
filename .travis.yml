@@ -9,11 +9,11 @@ before_install:
   - sudo apt-get install -y graphviz
 
 install:
-  - pip install coveralls mypy
+  - pip install coveralls mypy pytest-cov
 
 script:
-  - coverage run run_tests.py
-  - mypy graph/ test/
+  - pytest -v --cov=graph test/
+  - mypy --ignore-missing-imports graph/ test/
 
 after_success:
   - coveralls
