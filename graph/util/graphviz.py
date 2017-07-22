@@ -1,13 +1,10 @@
-# from enum import Enum
 from os import remove
-from subprocess import run, PIPE
-from tempfile import mkstemp
-from typing import Callable
+from subprocess import PIPE, run
+from typing import Callable, Dict, Tuple
 
 from graph import Graph, Vertex
 
 
-# class Filter(Enum):
 class Filter:
     DOT = 'dot'
     NEATO = 'neato'
@@ -19,43 +16,52 @@ class Filter:
 
 
 VertexToString = Callable[[Vertex], str]
+EdgeToColor = Callable[[Vertex, Vertex, int], str]
 
 
-def to_dot(g: Graph, name: str = None, to_str: VertexToString = str,
-           force_weight: bool = False) -> str:
+def to_dot(g: Graph,
+           name: str = None,
+           to_str: VertexToString = str,
+           force_weight: bool = False,
+           edge_color: EdgeToColor = None) -> str:
 
     name = name or str(hash(str(g)))
+    edge_color = edge_color or (lambda *args: None)
 
-    dot = ['graph ', name, ' {\n']
+    dot = ['graph {\n']
 
     for v1, v2, w in g.edges:
         dot += ['"', to_str(v1), '" -- "', to_str(v2), '"']
 
+        color = edge_color(v1, v2, w)
+
         if w != 1 or force_weight:
-            dot.append(f' [label="{str(w)}"]')
+            dot += [
+                ' [',
+                f'label="{str(w)}"',
+                f'color="{color}"' if color is not None else '',
+                ']']
 
         dot.append(';\n')
 
     for v in g.vertices:
         if len(g.neighbors(v)) == 0:
-            dot += ['"', to_str(v), '";']
+            dot += ['"', to_str(v), '";\n']
 
     dot.append('}')
 
     return ''.join(dot)
 
 
-def export_dot(g: Graph, filename: str, to_str: VertexToString = str):
-    dot = to_dot(g, to_str=to_str)
+def export_dot(g: Graph, filename: str, **kwargs):
+    dot = to_dot(g, **kwargs)
 
     with open(filename, 'w') as file:
         file.write(dot)
 
 
-def export_png(g: Graph, filename: str, to_str: VertexToString = str,
-               command: str = None):
-
-    dot = to_dot(g, to_str=to_str)
+def export_png(g: Graph, filename: str, command: str = None, **kwargs):
+    dot = to_dot(g, **kwargs)
 
     if not command:
         if g.is_tree():

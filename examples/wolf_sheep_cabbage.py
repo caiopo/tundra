@@ -80,6 +80,7 @@ if len(argv) > 1:
         graph, argv[1],
         command='dot')
 
+
 initial = State(True, True, True, True)
 
 final = State(False, False, False, False)
