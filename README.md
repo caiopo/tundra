@@ -10,12 +10,21 @@ Structures
 
 Algorithms
 ----------
+### Search
 - [Depth-first search](graph/algorithm/search.py)
 - [Breadth-first search](graph/algorithm/search.py)
+
+### Spanning tree
 - [Kruskal's Algorithm](graph/algorithm/spanning_tree.py)
 - [Prim's Algorithm](graph/algorithm/spanning_tree.py)
-- [Fringe](graph/algorithm/fringe.py)
 
+### Shortest path
+- [Dijskra's Algoritm](graph/algorithm/coloring.py)
+- [Floyd-Warshall Algoritm](graph/algorithm/coloring.py)
+
+### Miscellaneous
+- [Fringe](graph/algorithm/fringe.py)
+- [Greedy coloring](graph/algorithm/coloring.py)
 
 Utilities
 ---------
