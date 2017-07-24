@@ -1,16 +1,17 @@
+from heapq import heapify, heappop
 from itertools import product
 from math import sqrt
 from typing import Iterable, Optional, TypeVar, Union
 
 from graph import Graph, Vertex
 
-__all__ = ('complete', 'biclique', 'crown', 'lattice')
+__all__ = ('complete', 'biclique', 'crown', 'lattice', 'binary_tree')
 
 IterOrInt = Union[Iterable[Vertex], int]
 
 
-def complete(it_or_n: IterOrInt) -> Graph:
-    vertices = set(_int_to_range(it_or_n))
+def complete(iter_or_int: IterOrInt) -> Graph:
+    vertices = set(_int_to_range(iter_or_int))
 
     return Graph(
         vertices,
@@ -18,9 +19,9 @@ def complete(it_or_n: IterOrInt) -> Graph:
     )
 
 
-def biclique(it_or_n1: IterOrInt, it_or_n2: IterOrInt) -> Graph:
-    vertices1 = set(_int_to_range(it_or_n1))
-    vertices2 = set(_int_to_range(it_or_n2))
+def biclique(iter_or_int1: IterOrInt, iter_or_int2: IterOrInt) -> Graph:
+    vertices1 = set(_int_to_range(iter_or_int1))
+    vertices2 = set(_int_to_range(iter_or_int2))
 
     return Graph(
         vertices1 | vertices2,
@@ -28,9 +29,12 @@ def biclique(it_or_n1: IterOrInt, it_or_n2: IterOrInt) -> Graph:
     )
 
 
-def crown(it_or_n1: Iterable[Vertex], it_or_n2: Iterable[Vertex]) -> Graph:
-    vertices1 = list(_int_to_range(it_or_n1))
-    vertices2 = list(_int_to_range(it_or_n2))
+def crown(
+    iter_or_int1: Iterable[Vertex],
+    iter_or_int2: Iterable[Vertex],
+) -> Graph:
+    vertices1 = list(_int_to_range(iter_or_int1))
+    vertices2 = list(_int_to_range(iter_or_int2))
 
     if len(vertices1) == 0 or len(vertices2) == 0:
         raise ValueError(
@@ -40,8 +44,8 @@ def crown(it_or_n1: Iterable[Vertex], it_or_n2: Iterable[Vertex]) -> Graph:
     if len(vertices1) != len(vertices2):
         raise ValueError(
             'both groups must be equal in size. '
-            f'got: len(it_or_n1) = {len(vertices1)} and '
-            f'len(it_or_n2) = {len(vertices2)}'
+            f'got: len(iter_or_int1) = {len(vertices1)} and '
+            f'len(iter_or_int2) = {len(vertices2)}'
         )
 
     g = biclique(vertices1, vertices2)
@@ -52,19 +56,19 @@ def crown(it_or_n1: Iterable[Vertex], it_or_n2: Iterable[Vertex]) -> Graph:
     return g
 
 
-def lattice(it_or_n: IterOrInt = None,
+def lattice(iter_or_int: IterOrInt = None,
             *,
             width: Optional[int] = None,
             height: Optional[int] = None) -> Graph:
-    if it_or_n is None:
+    if iter_or_int is None:
         if width is None or height is None:
             raise ValueError(
-                'if it_or_n is None, width and height must be provided.'
+                'if iter_or_int is None, width and height must be provided.'
             )
 
-        it_or_n = width * height
+        iter_or_int = width * height
 
-    vertices = list(_int_to_range(it_or_n))
+    vertices = list(_int_to_range(iter_or_int))
 
     if len(vertices) == 0:
         raise ValueError(
@@ -87,11 +91,31 @@ def lattice(it_or_n: IterOrInt = None,
     )
 
 
-def _int_to_range(it_or_n):
-    if isinstance(it_or_n, int):
-        return range(it_or_n)
+def binary_tree(iter_or_int: IterOrInt) -> Graph:
+    vertices = list(_int_to_range(iter_or_int))
 
-    return it_or_n
+    if len(vertices) == 0:
+        raise ValueError(
+            'tree cannot be empty'
+        )
+
+    g = Graph(vertices)
+
+    for i, v in enumerate(vertices):
+        for offset in {1, 2}:
+            j = i * 2 + offset
+
+            if j < len(vertices):
+                g.link(i, j)
+
+    return g
+
+
+def _int_to_range(iter_or_int):
+    if isinstance(iter_or_int, int):
+        return range(iter_or_int)
+
+    return iter_or_int
 
 
 def _discover_width_and_height(len_, width, height):

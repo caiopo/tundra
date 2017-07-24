@@ -164,6 +164,8 @@ def test_degree(g):
 
 
 def test_regular(g):
+    assert Graph().is_regular()
+
     assert g.is_regular()
 
     g.link(0, 1)
@@ -196,6 +198,8 @@ def test_complete(g):
 
 
 def test_connected(g):
+    assert Graph().is_connected()
+
     assert not g.is_connected()
 
     for i in range(0, MAX_N, 2):
@@ -221,6 +225,8 @@ def test_tree_true(g):
 
 
 def test_tree_false(g):
+    assert not Graph().is_tree()
+
     for i in range(MAX_N):
         g.link(i, (i + 1) % MAX_N)
 
@@ -237,6 +243,8 @@ def test_cycle_true(g):
 
 
 def test_cycle_false(g):
+    assert not Graph().has_cycle()
+
     vertices = list(g.vertices)
 
     for v1, v2 in zip(vertices, vertices[1:]):

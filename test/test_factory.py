@@ -1,8 +1,8 @@
-import pytest
 from itertools import product
 
-from context import Graph, biclique, complete, crown, lattice
+import pytest
 
+from context import Graph, biclique, binary_tree, complete, crown, lattice
 
 lattice_test1 = Graph(
     {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
@@ -163,3 +163,13 @@ def test_lattice_raises():
 
     with pytest.raises(ValueError):
         lattice(20, width=3, height=10,)
+
+
+def test_binary_tree():
+    with pytest.raises(ValueError):
+        binary_tree(0)
+
+    for i in range(1, 20):
+        g = binary_tree(i)
+
+        assert g.is_tree()

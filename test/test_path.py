@@ -1,6 +1,6 @@
 import pytest
 
-from context import Graph, shortest_distance, dijkstra, floyd_warshall
+from context import Graph, dijkstra, floyd_warshall, shortest_distance
 
 
 @pytest.fixture

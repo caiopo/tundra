@@ -1,7 +1,6 @@
 from random import choice
-from typing import (Iterable, TypeVar, Union, Tuple,
-                    Dict, Set, Optional, Hashable)
-
+from typing import (Dict, Hashable, Iterable, Optional, Set, Tuple, TypeVar,
+                    Union)
 
 Vertex = Union[Hashable, int]
 
@@ -125,6 +124,9 @@ class Graph:
         """
         Return True if all vertices have the same degree, False otherwise
         """
+        if self.order == 0:
+            return True
+
         degree = self.degree(self._random_vertex())
 
         return all(self.degree(v) == degree for v in self.vertices)
@@ -143,6 +145,9 @@ class Graph:
         Returns True if there is a path between every pair of vertices,
         False otherwise
         """
+        if self.order == 0:
+            return True
+
         return self.vertices == self.transitive_closure(self._random_vertex())
 
     def is_tree(self) -> bool:
@@ -150,6 +155,9 @@ class Graph:
         Returns True if the graph is connected and has no cycles,
         False otherwise
         """
+        if self.order == 0:
+            return False
+
         v = self._random_vertex()
 
         return self.is_connected() and not self._cycle_with(v, v)
@@ -158,6 +166,9 @@ class Graph:
         """
         Returns True if there is a cycle in the graph, False otherwise
         """
+        if self.order == 0:
+            return False
+
         v = self._random_vertex()
 
         return self._cycle_with(v, v)
