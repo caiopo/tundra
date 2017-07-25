@@ -5,7 +5,8 @@ Graph Algorithms
 
 Structures
 ----------
-- [Graph class](graph/graph.py)
+- [Graph class](graph/core/graph.py)
+- [Digraph class](graph/core/digraph.py)
 
 
 Algorithms
