@@ -30,6 +30,7 @@ def dfs(g: Graph, current: Vertex, condition: Test,
 
 def bfs(g: Graph, start: Vertex,
         condition: Test) -> Optional[Vertex]:
+
     deq: Deque[Vertex] = deque()
     visited = set()
 

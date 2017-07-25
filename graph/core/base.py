@@ -2,6 +2,7 @@ from random import choice
 from typing import (Dict, Hashable, Iterable, Optional, Set, Tuple, TypeVar,
                     Union)
 
+
 Vertex = Union[Hashable, int]
 
 EdgeTuple = TypeVar('EdgeTuple', Tuple[Vertex, Vertex],
@@ -9,8 +10,14 @@ EdgeTuple = TypeVar('EdgeTuple', Tuple[Vertex, Vertex],
 
 
 class Weight:
-    def __init__(self, _vertices: Dict[Vertex, Dict[Vertex, int]]) -> None:
+    def __init__(
+            self,
+            _vertices: Dict[Vertex, Dict[Vertex, int]],
+            symmetrical: bool,
+    ) -> None:
+
         self._vertices = _vertices
+        self._symmetrical = symmetrical
 
     def __getitem__(self, item: Tuple[Vertex, Vertex]) -> int:
         v1, v2 = item
@@ -19,29 +26,30 @@ class Weight:
     def __setitem__(self, item: Tuple[Vertex, Vertex], weight: int):
         v1, v2 = item
 
-        if v1 not in self._vertices[v2]:
+        if v2 not in self._vertices[v1]:
             raise KeyError(
                 f'{v1} and {v2} are not neighbors'
             )
 
         self._vertices[v1][v2] = weight
-        self._vertices[v2][v1] = weight
+
+        if self._symmetrical:
+            self._vertices[v2][v1] = weight
 
 
-class Graph:
-    def __init__(self,
-                 vertices: Iterable[Vertex] = (),
-                 edges: Iterable[EdgeTuple] = ()) -> None:
+class BaseGraph:
+    def __init__(
+        self,
+        vertices: Iterable[Vertex],
+        symmetrical: bool,
+    ) -> None:
 
         self._vertices: Dict[Vertex, Dict[Vertex, int]] = {}
 
-        self.weight: Weight = Weight(self._vertices)
+        self.weight: Weight = Weight(self._vertices, symmetrical)
 
         for v in vertices:
             self.insert(v)
-
-        for e in edges:
-            self.link(*e)
 
     def insert(self, v: Vertex) -> None:
         """
@@ -56,32 +64,25 @@ class Graph:
         """
         Removes the vertex v, if it exists
         """
-        for v2 in self.neighbors(v):
-            self.unlink(v, v2)
+        raise NotImplementedError()
 
-        del self._vertices[v]
-
-    def link(self, v1: Vertex, v2: Vertex, weight: int = 1) -> None:
+    def link(self, v1: Vertex, v2: Vertex, weight: int=1) -> None:
         """
         Adds the edge from the vertices v1 to v2, if it doesn't exists
         """
-        if v1 not in self.neighbors(v2):
-            self._vertices[v1][v2] = weight
-            self._vertices[v2][v1] = weight
+        raise NotImplementedError()
 
     def unlink(self, v1: Vertex, v2: Vertex) -> None:
         """
         Removes the edge from the vertices v1 to v2
         """
-        del self._vertices[v1][v2]
-        if v1 != v2:
-            del self._vertices[v2][v1]
+        raise NotImplementedError()
 
     def has_edge(self, v1: Vertex, v2: Vertex) -> bool:
         """
         Return True if there is an edge between v1 and v2, False otherwise
         """
-        return v1 in self.neighbors(v2)
+        return v2 in self._vertices[v1]
 
     @property
     def order(self) -> int:
@@ -102,17 +103,13 @@ class Graph:
         """
         Returns a set containing the edges of the graph
         """
-        return {
-            (min(v1, v2), max(v1, v2), self.weight[v1, v2])
-            for v1 in self.vertices
-            for v2 in self.neighbors(v1)
-        }
+        raise NotImplementedError()
 
     def neighbors(self, v: Vertex) -> Set[Vertex]:
         """
         Returns a set containing the neighbors of v
         """
-        return set(self._vertices[v].keys())
+        raise NotImplementedError()
 
     def degree(self, v: Vertex) -> int:
         """
@@ -140,76 +137,6 @@ class Graph:
 
         return all(self.degree(v) == degree for v in self.vertices)
 
-    def is_connected(self) -> bool:
-        """
-        Returns True if there is a path between every pair of vertices,
-        False otherwise
-        """
-        if self.order == 0:
-            return True
-
-        return self.vertices == self.transitive_closure(self._random_vertex())
-
-    def is_tree(self) -> bool:
-        """
-        Returns True if the graph is connected and has no cycles,
-        False otherwise
-        """
-        if self.order == 0:
-            return False
-
-        v = self._random_vertex()
-
-        return self.is_connected() and not self._cycle_with(v, v)
-
-    def has_cycle(self) -> bool:
-        """
-        Returns True if there is a cycle in the graph, False otherwise
-        """
-        if self.order == 0:
-            return False
-
-        v = self._random_vertex()
-
-        return self._cycle_with(v, v)
-
-    def transitive_closure(
-            self, v: Vertex,
-            visited: Optional[Set[Vertex]] = None) -> Set[Vertex]:
-        """
-        Returns a set containing all vertices reachable from v
-        """
-        visited = visited or set()
-
-        visited.add(v)
-
-        for v_neigh in self.neighbors(v):
-            if v_neigh not in visited:
-                self.transitive_closure(v_neigh, visited)
-
-        return visited
-
-    def _cycle_with(self, v, v_prev, visited=None):
-        """
-        Returns True if there is a cycle in the graph containing v,
-        False otherwise
-        """
-        visited = visited or set()
-
-        if v in visited:
-            return True
-
-        visited.add(v)
-
-        for v_neigh in self.neighbors(v):
-            if v_neigh != v_prev:
-                if self._cycle_with(v_neigh, v, visited):
-                    return True
-
-        visited.remove(v)
-
-        return False
-
     def _random_vertex(self) -> Vertex:
         """
         Returns a random vertex of the graph
@@ -217,7 +144,11 @@ class Graph:
         return choice(tuple(self.vertices))
 
     def __str__(self) -> str:
-        return f'Graph({self.vertices}, {self.edges})'
+        return f'{type(self).__name__}({self.vertices}, {self.edges})'
 
     def __eq__(self, other) -> bool:
-        return self.vertices == other.vertices and self.edges == other.edges
+        return (
+            isinstance(self, type(other)) and
+            self.vertices == other.vertices and
+            self.edges == other.edges
+        )

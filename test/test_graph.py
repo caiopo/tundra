@@ -2,12 +2,12 @@ import pytest
 
 from context import Graph
 
-MAX_N = 100
+MAX = 100
 
 
 @pytest.fixture
 def g():
-    return Graph(range(MAX_N))
+    return Graph(range(MAX))
 
 
 def test_init():
@@ -23,7 +23,7 @@ def test_init():
 
 
 def test_add_vertex(g):
-    for i in range(MAX_N):
+    for i in range(MAX):
         assert i in g.vertices
 
 
@@ -36,7 +36,7 @@ def test_add_raises(g):
 
 
 def test_remove_vertex(g):
-    for i in range(MAX_N):
+    for i in range(MAX):
         g.remove(i)
 
     assert g.order == 0
@@ -48,13 +48,13 @@ def test_remove_raises(g):
 
 
 def test_add_edge(g):
-    for i in range(MAX_N):
-        g.link(i, (i + 1) % MAX_N)
+    for i in range(MAX):
+        g.link(i, (i + 1) % MAX)
 
-    for i in range(MAX_N):
-        assert (i + 1) % MAX_N in g.neighbors(i)
+    for i in range(MAX):
+        assert (i + 1) % MAX in g.neighbors(i)
 
-        assert i in g.neighbors((i + 1) % MAX_N)
+        assert i in g.neighbors((i + 1) % MAX)
 
 
 def test_add_edge_raises(g):
@@ -63,21 +63,21 @@ def test_add_edge_raises(g):
 
 
 def test_remove_edge_commutative(g):
-    for i in range(MAX_N):
-        g.link(i, (i + 1) % MAX_N)
+    for i in range(MAX):
+        g.link(i, (i + 1) % MAX)
 
-    for i in range(MAX_N):
-        g.unlink((i + 1) % MAX_N, i)
+    for i in range(MAX):
+        g.unlink((i + 1) % MAX, i)
 
-    for i in range(MAX_N):
+    for i in range(MAX):
         assert i not in g.neighbors(i)
 
 
 def test_remove_edge_neighbors(g):
-    for v in range(1, MAX_N):
+    for v in range(1, MAX):
         g.link(0, v)
 
-    assert g.edges == {(0, v, 1) for v in range(1, MAX_N)}
+    assert g.edges == {(0, v, 1) for v in range(1, MAX)}
 
     g.remove(0)
 
@@ -90,19 +90,19 @@ def test_remove_edge_raises(g):
 
 
 def test_get_weight(g):
-    for i in range(MAX_N):
-        g.link(i, (i + 1) % MAX_N, i**3)
-        assert g.weight[i, (i + 1) % MAX_N] == i**3
+    for i in range(MAX):
+        g.link(i, (i + 1) % MAX, i**3)
+        assert g.weight[i, (i + 1) % MAX] == i**3
 
 
 def test_set_weight(g):
-    for i in range(MAX_N):
-        g.link(i, (i + 1) % MAX_N, i**3)
-        assert g.weight[i, (i + 1) % MAX_N] == i**3
+    for i in range(MAX):
+        g.link(i, (i + 1) % MAX, i**3)
+        assert g.weight[i, (i + 1) % MAX] == i**3
 
-    for i in range(MAX_N):
-        g.weight[i, (i + 1) % MAX_N] = 2**i
-        assert g.weight[i, (i + 1) % MAX_N] == 2**i
+    for i in range(MAX):
+        g.weight[i, (i + 1) % MAX] = 2**i
+        assert g.weight[i, (i + 1) % MAX] == 2**i
 
 
 def test_set_weight_raises(g):
@@ -120,7 +120,7 @@ def test_order(g):
 
     assert gr.order == 0
 
-    for i in range(MAX_N):
+    for i in range(MAX):
         gr.insert(i)
         assert gr.order == i + 1
 
@@ -128,38 +128,38 @@ def test_order(g):
 def test_vertices(g):
     vertices = g.vertices
 
-    for i in range(MAX_N):
+    for i in range(MAX):
         assert i in vertices
 
 
 def test_neighbors(g):
-    for i in range(MAX_N):
-        g.link(i, (2 * i) % MAX_N)
-        g.link(i, (3 * i) % MAX_N)
-        g.link(i, (4 * i) % MAX_N)
+    for i in range(MAX):
+        g.link(i, (2 * i) % MAX)
+        g.link(i, (3 * i) % MAX)
+        g.link(i, (4 * i) % MAX)
 
-    for i in range(MAX_N):
+    for i in range(MAX):
         adj = g.neighbors(i)
 
-        assert (2 * i) % MAX_N in adj
-        assert (3 * i) % MAX_N in adj
-        assert (4 * i) % MAX_N in adj
+        assert (2 * i) % MAX in adj
+        assert (3 * i) % MAX in adj
+        assert (4 * i) % MAX in adj
 
 
 def test_degree(g):
-    for i in range(MAX_N):
+    for i in range(MAX):
         assert g.degree(i) == 0
 
-    for i in range(MAX_N):
-        g.link(i, (i + 1) % MAX_N)
+    for i in range(MAX):
+        g.link(i, (i + 1) % MAX)
 
-    for i in range(MAX_N):
+    for i in range(MAX):
         assert g.degree(i) == 2
 
-    for i in range(MAX_N):
-        g.link(i, (i + 2) % MAX_N)
+    for i in range(MAX):
+        g.link(i, (i + 2) % MAX)
 
-    for i in range(MAX_N):
+    for i in range(MAX):
         assert g.degree(i) == 4
 
 
@@ -172,8 +172,8 @@ def test_regular(g):
 
     assert not g.is_regular()
 
-    for i in range(1, MAX_N):
-        g.link(i, (i + 1) % MAX_N)
+    for i in range(1, MAX):
+        g.link(i, (i + 1) % MAX)
 
     assert g.is_regular()
 
@@ -185,13 +185,13 @@ def test_regular(g):
 def test_complete(g):
     assert not g.is_complete()
 
-    for i in range(MAX_N):
-        for j in range(MAX_N):
+    for i in range(MAX):
+        for j in range(MAX):
             g.link(i, j)
 
     assert not g.is_complete()
 
-    for i in range(MAX_N):
+    for i in range(MAX):
         g.unlink(i, i)
 
     assert g.is_complete()
@@ -202,23 +202,23 @@ def test_connected(g):
 
     assert not g.is_connected()
 
-    for i in range(0, MAX_N, 2):
+    for i in range(0, MAX, 2):
         g.link(i, i + 1)
 
     assert not g.is_connected()
 
-    for i in range(1, MAX_N, 2):
-        g.link(i, (i + 1) % MAX_N)
+    for i in range(1, MAX, 2):
+        g.link(i, (i + 1) % MAX)
 
     assert g.is_connected()
 
 
 def test_tree_true(g):
-    for i in range(MAX_N):
-        if (2 * i + 1) < MAX_N:
+    for i in range(MAX):
+        if (2 * i + 1) < MAX:
             g.link(i, 2 * i + 1)
 
-        if (2 * i + 2) < MAX_N:
+        if (2 * i + 2) < MAX:
             g.link(i, 2 * i + 2)
 
     assert g.is_tree()
@@ -227,8 +227,8 @@ def test_tree_true(g):
 def test_tree_false(g):
     assert not Graph().is_tree()
 
-    for i in range(MAX_N):
-        g.link(i, (i + 1) % MAX_N)
+    for i in range(MAX):
+        g.link(i, (i + 1) % MAX)
 
     assert not g.is_tree()
 
@@ -254,24 +254,24 @@ def test_cycle_false(g):
 
 
 def test_transitive_closure(g):
-    for i in range(MAX_N):
+    for i in range(MAX):
         assert g.transitive_closure(i) == {i}
 
-    for i in range(0, MAX_N, 2):
-        g.link(i, (i + 1) % MAX_N)
+    for i in range(0, MAX, 2):
+        g.link(i, (i + 1) % MAX)
 
-    for i in range(0, MAX_N, 2):
-        assert g.transitive_closure(i) == {i, (i + 1) % MAX_N}
+    for i in range(0, MAX, 2):
+        assert g.transitive_closure(i) == {i, (i + 1) % MAX}
 
-    for i in range(1, MAX_N, 2):
+    for i in range(1, MAX, 2):
         assert g.transitive_closure(i) == {i - 1, i}
 
-    for i in range(1, MAX_N, 2):
-        g.link(i, (i + 1) % MAX_N)
+    for i in range(1, MAX, 2):
+        g.link(i, (i + 1) % MAX)
 
     assert g.is_connected()
 
-    for i in range(MAX_N):
+    for i in range(MAX):
         assert g.transitive_closure(i) == g.vertices
 
 
