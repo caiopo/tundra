@@ -74,5 +74,9 @@ def export_png(g: Graph, filename: str, command: str = None, **kwargs):
             command = Filter.SFDP
 
     with open(filename, 'wb') as file:
-        proc = run([command, '-Tpng'], input=dot.encode('utf-8'),
-                   stdout=file, check=True)
+        run(
+            [command, '-Tpng'],
+            input=dot.encode('utf-8'),
+            stdout=file,
+            check=True,
+        )
