@@ -2,7 +2,9 @@ import unittest
 from subprocess import PIPE, run
 from tempfile import NamedTemporaryFile
 
-from context import Graph, export_dot, export_png, to_dot
+import pytest
+
+from context import Graph, export_dot, export_png, is_complete, to_dot
 
 g_dot1 = 'graph {\n"1" -- "2";\n"0" -- "1";\n"5" -- "6";\n' \
     '"6" -- "7";\n"8" -- "9";\n"3" -- "4";\n"7" -- "8";\n"4" -- "5";' \
@@ -27,56 +29,60 @@ def is_png(filename):
     return result.stdout.decode('utf-8').split()[1] == 'image/png'
 
 
-class TestGraphviz(unittest.TestCase):
-    def setUp(self):
-        self.g = Graph(range(10), zip(range(9), range(1, 10)))
+@pytest.fixture
+def g():
+    return Graph(range(10), zip(range(9), range(1, 10)))
 
-    def test_to_dot(self):
-        self.assertEqual(to_dot(self.g), g_dot1)
 
-        self.g.unlink(8, 9)
+def test_to_dot(g):
+    assert to_dot(g) == g_dot1
 
-        self.assertEqual(to_dot(self.g), g_dot2)
+    g.unlink(8, 9)
 
-    def test_weighted_dot(self):
-        g = Graph(range(10), zip(range(9), range(1, 10), [5] * 9))
+    assert to_dot(g) == g_dot2
 
-        self.assertEqual(to_dot(g), g_dot_weighted)
 
-    def test_export_dot(self):
-        with NamedTemporaryFile() as file:
-            export_dot(self.g, file.name)
+def test_weighted_dot(g):
+    g = Graph(range(10), zip(range(9), range(1, 10), [5] * 9))
 
-            self.assertEqual(file.read().decode('utf-8'), g_dot1)
+    assert to_dot(g) == g_dot_weighted
 
-        self.g.unlink(8, 9)
 
-        with NamedTemporaryFile() as file:
-            export_dot(self.g, file.name)
+def test_export_dot(g):
+    with NamedTemporaryFile() as file:
+        export_dot(g, file.name)
 
-            self.assertEqual(file.read().decode('utf-8'), g_dot2)
+        assert file.read().decode('utf-8') == g_dot1
 
-    def test_export_png(self):
-        with NamedTemporaryFile() as file:
-            export_png(self.g, file.name)
+    g.unlink(8, 9)
 
-            self.assertTrue(is_png(file.name))
+    with NamedTemporaryFile() as file:
+        export_dot(g, file.name)
 
-        for v1 in self.g.vertices:
-            for v2 in self.g.vertices:
-                if v1 != v2:
-                    self.g.link(v1, v2)
+        assert file.read().decode('utf-8') == g_dot2
 
-        self.assertTrue(self.g.is_complete())
 
-        with NamedTemporaryFile() as file:
-            export_png(self.g, file.name)
+def test_export_png(g):
+    with NamedTemporaryFile() as file:
+        export_png(g, file.name)
 
-            self.assertTrue(is_png(file.name))
+        assert is_png(file.name)
 
-        self.g.unlink(0, 1)
+    for v1 in g.vertices:
+        for v2 in g.vertices:
+            if v1 != v2 and not g.has_edge(v1, v2):
+                g.link(v1, v2)
 
-        with NamedTemporaryFile() as file:
-            export_png(self.g, file.name)
+    assert is_complete(g)
 
-            self.assertTrue(is_png(file.name))
+    with NamedTemporaryFile() as file:
+        export_png(g, file.name)
+
+        assert is_png(file.name)
+
+    g.unlink(0, 1)
+
+    with NamedTemporaryFile() as file:
+        export_png(g, file.name)
+
+        assert is_png(file.name)

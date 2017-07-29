@@ -3,6 +3,9 @@ from subprocess import PIPE, run
 from typing import Callable, Dict, Tuple
 
 from graph import Graph, Vertex
+from graph.algorithm import is_tree, is_complete
+
+__all__ = ('Filter', 'to_dot', 'export_dot', 'export_png')
 
 
 class Filter:
@@ -64,9 +67,9 @@ def export_png(g: Graph, filename: str, command: str = None, **kwargs):
     dot = to_dot(g, **kwargs)
 
     if not command:
-        if g.is_tree():
+        if is_tree(g):
             command = Filter.DOT
-        elif g.is_complete():
+        elif is_complete(g):
             command = Filter.CIRCO
         else:
             command = Filter.SFDP

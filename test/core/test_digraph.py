@@ -34,6 +34,23 @@ def test_init():
     assert dg.edges == set(zip(range(10), range(1, 10), repeat(1)))
 
 
+def test_remove(dg):
+    knot(dg)
+
+    for v in dg.vertices:
+        dg.remove(v)
+
+    assert dg.vertices == set()
+    assert dg.edges == set()
+
+
+def test_link_raises(dg):
+    dg.link(0, 1)
+
+    with pytest.raises(ValueError):
+        dg.link(0, 1)
+
+
 def test_unlink(dg):
     for v in dg.vertices:
         for w in dg.vertices - {v}:
@@ -44,6 +61,11 @@ def test_unlink(dg):
             dg.unlink(v, w)
 
     assert dg.edges == set()
+
+
+def test_unlink_raises(dg):
+    with pytest.raises(ValueError):
+        dg.unlink(0, 1)
 
 
 def test_predecessors(dg):

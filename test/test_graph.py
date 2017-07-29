@@ -134,9 +134,15 @@ def test_vertices(g):
 
 def test_neighbors(g):
     for i in range(MAX):
-        g.link(i, (2 * i) % MAX)
-        g.link(i, (3 * i) % MAX)
-        g.link(i, (4 * i) % MAX)
+        vs = {
+            (2 * i) % MAX,
+            (3 * i) % MAX,
+            (4 * i) % MAX,
+        }
+
+        for v in vs:
+            if not g.has_edge(i, v):
+                g.link(i, v)
 
     for i in range(MAX):
         adj = g.neighbors(i)
@@ -161,118 +167,6 @@ def test_degree(g):
 
     for i in range(MAX):
         assert g.degree(i) == 4
-
-
-def test_regular(g):
-    assert Graph().is_regular()
-
-    assert g.is_regular()
-
-    g.link(0, 1)
-
-    assert not g.is_regular()
-
-    for i in range(1, MAX):
-        g.link(i, (i + 1) % MAX)
-
-    assert g.is_regular()
-
-    g.link(1, 3)
-
-    assert not g.is_regular()
-
-
-def test_complete(g):
-    assert not g.is_complete()
-
-    for i in range(MAX):
-        for j in range(MAX):
-            g.link(i, j)
-
-    assert not g.is_complete()
-
-    for i in range(MAX):
-        g.unlink(i, i)
-
-    assert g.is_complete()
-
-
-def test_connected(g):
-    assert Graph().is_connected()
-
-    assert not g.is_connected()
-
-    for i in range(0, MAX, 2):
-        g.link(i, i + 1)
-
-    assert not g.is_connected()
-
-    for i in range(1, MAX, 2):
-        g.link(i, (i + 1) % MAX)
-
-    assert g.is_connected()
-
-
-def test_tree_true(g):
-    for i in range(MAX):
-        if (2 * i + 1) < MAX:
-            g.link(i, 2 * i + 1)
-
-        if (2 * i + 2) < MAX:
-            g.link(i, 2 * i + 2)
-
-    assert g.is_tree()
-
-
-def test_tree_false(g):
-    assert not Graph().is_tree()
-
-    for i in range(MAX):
-        g.link(i, (i + 1) % MAX)
-
-    assert not g.is_tree()
-
-
-def test_cycle_true(g):
-    for v1 in g.vertices:
-        for v2 in g.vertices:
-            if v1 != v2:
-                g.link(v1, v2, (v1 + v2) % 5)
-
-    assert g.has_cycle()
-
-
-def test_cycle_false(g):
-    assert not Graph().has_cycle()
-
-    vertices = list(g.vertices)
-
-    for v1, v2 in zip(vertices, vertices[1:]):
-        g.link(v1, v2, (v1 + v2) % 5)
-
-    assert not g.has_cycle()
-
-
-def test_transitive_closure(g):
-    for i in range(MAX):
-        assert g.transitive_closure(i) == {i}
-
-    for i in range(0, MAX, 2):
-        g.link(i, (i + 1) % MAX)
-
-    for i in range(0, MAX, 2):
-        assert g.transitive_closure(i) == {i, (i + 1) % MAX}
-
-    for i in range(1, MAX, 2):
-        assert g.transitive_closure(i) == {i - 1, i}
-
-    for i in range(1, MAX, 2):
-        g.link(i, (i + 1) % MAX)
-
-    assert g.is_connected()
-
-    for i in range(MAX):
-        assert g.transitive_closure(i) == g.vertices
 
 
 def test_str(g):

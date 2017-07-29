@@ -15,7 +15,11 @@ def complete(iter_or_int: IterOrInt) -> Graph:
 
     return Graph(
         vertices,
-        ((v1, v2) for v1, v2 in product(vertices, vertices) if v1 is not v2)
+        {
+            (min(v1, v2), max(v1, v2))
+            for v1, v2 in product(vertices, vertices)
+            if v1 is not v2
+        }
     )
 
 

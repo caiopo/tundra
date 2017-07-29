@@ -2,6 +2,9 @@ from math import inf
 from typing import Dict, cast
 
 from graph import Graph, Vertex
+from graph.algorithm.tests import transitive_closure
+
+__all__ = ('prim', 'kruskal')
 
 
 def prim(g: Graph) -> Graph:
@@ -57,7 +60,7 @@ def kruskal(g: Graph) -> Graph:
     while t.order - 1 > n_edges:
         v1, v2, w = edges.pop()
 
-        if v1 not in t.transitive_closure(v2):
+        if v1 not in transitive_closure(t, v2):
             t.link(v1, v2, w)
             n_edges += 1
 

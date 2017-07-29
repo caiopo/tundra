@@ -20,14 +20,14 @@ Algorithms
 - [Prim's Algorithm](graph/algorithm/spanning_tree.py)
 
 ### Shortest path
-- [Dijskra's Algoritm](graph/algorithm/coloring.py)
-- [Floyd-Warshall Algoritm](graph/algorithm/coloring.py)
+- [Dijskra's Algoritm](graph/algorithm/path.py)
+- [Floyd-Warshall Algoritm](graph/algorithm/path.py)
 
 ### Miscellaneous
-- [Fringe](graph/algorithm/fringe.py)
-- [Greedy coloring](graph/algorithm/coloring.py)
+- [Fringe](graph/algorithm/misc.py)
+- [Greedy coloring](graph/algorithm/misc.py)
 
 Utilities
 ---------
-- [DOT language conversion](graph/util/graphviz.py)
-- [Export Graph to PNG](graph/util/graphviz.py)
+- [DOT language conversion](graph/util.py)
+- [Export Graph to PNG](graph/util.py)

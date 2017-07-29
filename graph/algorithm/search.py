@@ -5,6 +5,8 @@ from graph import Graph, Vertex
 
 Test = Callable[[Vertex], bool]
 
+__all__ = ('bfs', 'dfs')
+
 
 def dfs(g: Graph, current: Vertex, condition: Test,
         visited: Set = None) -> Optional[Vertex]:
