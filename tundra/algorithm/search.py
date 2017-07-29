@@ -1,7 +1,7 @@
 from collections import deque
 from typing import Callable, Deque, Optional, Set
 
-from graph import Graph, Vertex
+from tundra import Graph, Vertex
 
 Test = Callable[[Vertex], bool]
 

@@ -12,8 +12,8 @@ install:
   - pip install coveralls mypy pytest-cov
 
 script:
-  - pytest -v --cov=graph test/
-  - mypy --ignore-missing-imports graph/ test/
+  - pytest -v --cov=tundra test/
+  - mypy --ignore-missing-imports tundra/ test/
 
 after_success:
   - coveralls

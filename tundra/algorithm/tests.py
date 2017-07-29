@@ -1,7 +1,7 @@
 from random import choice
 from typing import Optional, Set
 
-from graph import Digraph, Graph, Vertex
+from tundra import Digraph, Graph, Vertex
 
 __all__ = ('is_tree', 'is_regular', 'is_complete',
            'is_connected', 'has_cycle', 'transitive_closure')

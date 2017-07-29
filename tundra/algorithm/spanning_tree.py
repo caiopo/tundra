@@ -1,8 +1,8 @@
 from math import inf
 from typing import Dict, cast
 
-from graph import Graph, Vertex
-from graph.algorithm.tests import transitive_closure
+from tundra import Graph, Vertex
+from tundra.algorithm.tests import transitive_closure
 
 __all__ = ('prim', 'kruskal')
 

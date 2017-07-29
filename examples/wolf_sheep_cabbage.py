@@ -26,7 +26,7 @@ from itertools import product
 from sys import argv
 from typing import NamedTuple
 
-from graph import Graph, algorithm, util
+from tundra import Graph, algorithm, util
 
 
 class State(NamedTuple):

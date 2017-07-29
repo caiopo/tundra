@@ -1,6 +1,6 @@
 from typing import Dict, Iterable, Set
 
-from graph import Graph, Vertex
+from tundra import Graph, Vertex
 
 __all__ = ('fringe', 'coloring')
 

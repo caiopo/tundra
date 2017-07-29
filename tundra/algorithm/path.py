@@ -1,7 +1,7 @@
 from math import inf
 from typing import Dict, List, Optional, Set, Tuple
 
-from graph import Graph, Vertex
+from tundra import Graph, Vertex
 
 __all__ = ('shortest_distance', 'dijkstra', 'floyd_warshall')
 

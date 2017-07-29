@@ -3,7 +3,7 @@ from itertools import product
 from math import sqrt
 from typing import Iterable, Optional, TypeVar, Union
 
-from graph import Graph, Vertex
+from tundra import Graph, Vertex
 
 __all__ = ('complete', 'biclique', 'crown', 'lattice', 'binary_tree')
 

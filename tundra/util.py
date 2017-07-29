@@ -2,8 +2,8 @@ from os import remove
 from subprocess import PIPE, run
 from typing import Callable, Dict, Tuple
 
-from graph import Graph, Vertex
-from graph.algorithm import is_tree, is_complete
+from tundra import Graph, Vertex
+from tundra.algorithm import is_tree, is_complete
 
 __all__ = ('Filter', 'to_dot', 'export_dot', 'export_png')
 
