@@ -17,9 +17,7 @@ Text adapted from Wikipedia
 
 Usage:
 
-python ./wsc.py [graph.png]
-
-TODO: if an argument is provided, it will export a PNG of the generated graph
+python ./wolf_sheep_cabbage.py [graph.png]
 """
 
 from itertools import product
@@ -72,7 +70,11 @@ states = {
 
 graph = Graph(
     states,
-    {(s1, s2) for s1, s2 in product(states, repeat=2) if has_edge(s1, s2)}
+    {
+        (min(s1, s2), max(s1, s2))
+        for s1, s2 in product(states, repeat=2)
+        if has_edge(s1, s2)
+    }
 )
 
 if len(argv) > 1:

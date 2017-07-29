@@ -3,11 +3,12 @@ Tundra
 
 [![Build Status](https://travis-ci.org/caiopo/tundra.svg?branch=master)](https://travis-ci.org/caiopo/graph) [![Coverage Status](https://coveralls.io/repos/github/caiopo/tundra/badge.svg?branch=master)](https://coveralls.io/github/caiopo/tundra?branch=master)
 
+Pure Python, no dependencies Graph Algorithms module
+
 Structures
 ----------
 - [Graph class](tundra/core/graph.py)
 - [Digraph class](tundra/core/digraph.py)
-
 
 Algorithms
 ----------
@@ -26,6 +27,7 @@ Algorithms
 ### Miscellaneous
 - [Fringe](tundra/algorithm/misc.py)
 - [Greedy coloring](tundra/algorithm/misc.py)
+- [Proprety tests (is\_tree, is\_complete, ...)](tundra/algorithm/tests.py)
 
 Utilities
 ---------
