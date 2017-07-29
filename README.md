@@ -1,7 +1,7 @@
 Tundra
 ======
 
-[![Build Status](https://travis-ci.org/caiopo/tundra.svg?branch=master)](https://travis-ci.org/caiopo/graph) [![Coverage Status](https://coveralls.io/repos/github/caiopo/tundra/badge.svg?branch=master)](https://coveralls.io/github/caiopo/tundra?branch=master) [![PyPI](https://img.shields.io/pypi/v/tundra.svg)](https://pypi.python.org/pypi/tundra) [![PyPI](https://img.shields.io/pypi/pyversions/tundra.svg)](https://pypi.python.org/pypi/tundra) [![PyPI](https://img.shields.io/pypi/l/tundra.svg)](https://pypi.python.org/pypi/tundra)
+[![Build Status](https://travis-ci.org/caiopo/tundra.svg?branch=master)](https://travis-ci.org/caiopo/graph) [![Coverage Status](https://coveralls.io/repos/github/caiopo/tundra/badge.svg?branch=master)](https://coveralls.io/github/caiopo/tundra?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9e2d5134e9244501b10fafe5a2e85556)](https://www.codacy.com/app/caiopo/tundra?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=caiopo/tundra&amp;utm_campaign=Badge_Grade) [![PyPI](https://img.shields.io/pypi/v/tundra.svg)](https://pypi.python.org/pypi/tundra) [![PyPI](https://img.shields.io/pypi/pyversions/tundra.svg)](https://pypi.python.org/pypi/tundra) [![PyPI](https://img.shields.io/pypi/l/tundra.svg)](https://pypi.python.org/pypi/tundra)
 
 Pure Python, no dependencies Graph Algorithms module
 
