@@ -38,7 +38,13 @@ class State(NamedTuple):
     boat: bool
 
     def __str__(self):
-        return f'{self.wolf}, {self.sheep}, {self.cabbage}, {self.boat}'
+        return (f'({int(self.wolf)},'
+                f' {int(self.sheep)},'
+                f' {int(self.cabbage)},'
+                f' {int(self.boat)})')
+
+    def __repr__(self):
+        return str(self)
 
 
 def valid(state):
@@ -58,6 +64,24 @@ def has_edge(s1, s2):
     return (w + s + c) in (2, 3)
 
 
+def export_solution(graph, solution):
+    if len(argv) > 1:
+        solution_edges = set(zip(solution, solution[1:]))
+
+        util.export_png(
+            graph,
+            argv[1],
+            command=util.Filter.DOT,
+            edge_color=(
+                lambda v1, v2, w: 'red'
+                if (
+                    (v1, v2) in solution_edges or
+                    (v2, v1) in solution_edges
+                ) else None
+            )
+        )
+
+
 states = {
     s
     for s in (State(w, s, c, b)
@@ -66,6 +90,8 @@ states = {
               for c in {True, False}
               for b in {True, False})
     if valid(s)
+
+
 }
 
 graph = Graph(
@@ -77,17 +103,14 @@ graph = Graph(
     }
 )
 
-if len(argv) > 1:
-    util.export_png(
-        graph, argv[1],
-        command='dot')
-
 
 initial = State(True, True, True, True)
 
 final = State(False, False, False, False)
 
 solution = algorithm.dijkstra(graph, initial, final)
+
+export_solution(graph, solution)
 
 print(*solution, sep='\n')
 

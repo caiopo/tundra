@@ -21,13 +21,12 @@ VertexToString = Callable[[Vertex], str]
 EdgeToColor = Callable[[Vertex, Vertex, int], str]
 
 
-def to_dot(g: Graph,
-           name: str = None,
-           to_str: VertexToString = str,
-           force_weight: bool = False,
-           edge_color: EdgeToColor = None) -> str:
-
-    name = name or str(hash(str(g)))
+def to_dot(
+    g: Graph,
+    to_str: VertexToString = str,
+    force_weight: bool = False,
+    edge_color: EdgeToColor = None
+) -> str:
     edge_color = edge_color or (lambda *args: None)
 
     dot = ['graph {\n']
@@ -35,14 +34,22 @@ def to_dot(g: Graph,
     for v1, v2, w in g.edges:
         dot += ['"', to_str(v1), '" -- "', to_str(v2), '"']
 
-        color = edge_color(v1, v2, w)
+        opts = []
 
         if w != 1 or force_weight:
+            opts.append(f'label="{str(w)}"')
+
+        color = edge_color(v1, v2, w)
+
+        if color is not None:
+            opts.append(f'color="{color}"')
+
+        if len(opts) > 0:
             dot += [
                 ' [',
-                f'label="{str(w)}"',
-                f'color="{color}"' if color is not None else '',
-                ']']
+                *opts,
+                ']'
+            ]
 
         dot.append(';\n')
 
