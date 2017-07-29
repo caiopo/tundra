@@ -1,5 +1,5 @@
-from subprocess import PIPE, run
-from typing import Callable, Tuple
+from subprocess import run
+from typing import Callable
 
 from tundra import Graph, Vertex
 from tundra.algorithm import is_complete, is_tree
@@ -73,8 +73,6 @@ def export_png(g: Graph, filename: str, command: str = None, **kwargs):
         else:
             command = Filter.SFDP
 
-    proc = run([command, '-Tpng'], input=dot.encode('utf-8'),
-               stdout=PIPE, check=True)
-
     with open(filename, 'wb') as file:
-        file.write(proc.stdout)
+        proc = run([command, '-Tpng'], input=dot.encode('utf-8'),
+                   stdout=file, check=True)
