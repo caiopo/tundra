@@ -1,4 +1,3 @@
-import unittest
 from subprocess import PIPE, run
 from tempfile import NamedTemporaryFile
 

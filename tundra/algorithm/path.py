@@ -1,5 +1,5 @@
 from math import inf
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set
 
 from tundra import Graph, Vertex
 

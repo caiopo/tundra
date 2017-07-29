@@ -75,8 +75,6 @@ def test_biclique():
 
 
 def test_crown():
-    sizes = list(range(21))
-
     for size in range(1, 21):
         vertices1 = list(range(size))
         vertices2 = list(range(size, 2 * size))

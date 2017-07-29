@@ -53,4 +53,4 @@ def test_kruskal_raises():
                 g.link(v1, v2, 10)
 
     with pytest.raises(ValueError):
-        tree = kruskal(g)
+        kruskal(g)

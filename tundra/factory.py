@@ -1,7 +1,6 @@
-from heapq import heapify, heappop
 from itertools import product
 from math import sqrt
-from typing import Iterable, Optional, TypeVar, Union
+from typing import Iterable, Optional, Union
 
 from tundra import Graph, Vertex
 
@@ -105,12 +104,15 @@ def binary_tree(iter_or_int: IterOrInt) -> Graph:
 
     g = Graph(vertices)
 
-    for i, v in enumerate(vertices):
+    for i, _ in enumerate(vertices):
         for offset in {1, 2}:
             j = i * 2 + offset
 
             if j < len(vertices):
-                g.link(i, j)
+                g.link(
+                    vertices[i],
+                    vertices[j],
+                )
 
     return g
 

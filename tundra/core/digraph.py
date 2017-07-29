@@ -1,5 +1,4 @@
-from typing import (Dict, Hashable, Iterable, Optional, Set, Tuple, TypeVar,
-                    Union)
+from typing import Dict, Hashable, Iterable, Set, Tuple, TypeVar, Union
 
 __all__ = ('Digraph', 'Vertex', 'EdgeTuple')
 

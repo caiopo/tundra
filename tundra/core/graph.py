@@ -1,6 +1,6 @@
-from typing import Iterable, Optional, Set, Tuple
+from typing import Iterable, Set, Tuple
 
-from .digraph import Digraph, Weight, Vertex, EdgeTuple
+from .digraph import Digraph, EdgeTuple, Vertex, Weight
 
 __all__ = ('Graph',)
 
