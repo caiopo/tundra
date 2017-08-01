@@ -1,7 +1,5 @@
 from setuptools import find_packages, setup
 
-print(find_packages())
-
 setup(
     name='tundra',
     version='0.1',
