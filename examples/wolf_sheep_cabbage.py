@@ -73,8 +73,7 @@ def export_solution(graph, solution):
             argv[1],
             command=util.Filter.DOT,
             edge_color=(
-                lambda v1, v2, w: 'red'
-                if (
+                lambda v1, v2, w: 'red' if (
                     (v1, v2) in solution_edges or
                     (v2, v1) in solution_edges
                 ) else None
@@ -84,14 +83,8 @@ def export_solution(graph, solution):
 
 states = {
     s
-    for s in (State(w, s, c, b)
-              for w in {True, False}
-              for s in {True, False}
-              for c in {True, False}
-              for b in {True, False})
+    for s in (State(*t) for t in product({True, False}, repeat=4))
     if valid(s)
-
-
 }
 
 graph = Graph(
