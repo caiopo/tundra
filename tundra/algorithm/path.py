@@ -1,12 +1,19 @@
 from math import inf
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 from tundra import Graph, Vertex
 
 __all__ = ('shortest_distance', 'dijkstra', 'floyd_warshall')
 
 
-def _dijkstra(g: Graph, start: Vertex):
+def _dijkstra(
+    g: Graph,
+    start: Vertex,
+) -> Tuple[
+    Dict[Vertex, float],
+    Dict[Vertex, Optional[Vertex]]
+]:
+
     distance = {v: inf for v in g.vertices}
     distance[start] = 0
 
