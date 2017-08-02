@@ -21,6 +21,13 @@ graph {\n"2" -- "3" [label="5"];\
 \n"1" -- "2" [label="5"];\n"0" -- "1" [label="5"];\n}
 '''.strip()
 
+g_dot_color = '''
+graph {\n"1" -- "2";\n"0" -- "1";\n"5" -- "6" [color="red"];\
+\n"6" -- "7" [color="red"];\n"8" -- "9" [color="red"];\n\
+"3" -- "4" [color="red"];\n"7" -- "8" [color="red"];\n\
+"4" -- "5" [color="red"];\n"2" -- "3";\n}
+'''.strip()
+
 
 def is_png(filename):
     result = run(['file', '--mime-type', filename], stdout=PIPE, check=True)
@@ -45,6 +52,15 @@ def test_weighted_dot(g):
     g = Graph(range(10), zip(range(9), range(1, 10), [5] * 9))
 
     assert to_dot(g) == g_dot_weighted
+
+
+def test_color_dot(g):
+    g = Graph(range(10), zip(range(9), range(1, 10)))
+
+    def edge_color(v1, v2, w):
+        return 'red' if (v1 + v2) > 5 else None
+
+    assert to_dot(g, edge_color=edge_color) == g_dot_color
 
 
 def test_export_dot(g):
