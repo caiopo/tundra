@@ -1,6 +1,7 @@
 import pytest
 
-from context import Graph, dijkstra, floyd_warshall, shortest_distance
+from context import (Graph, dijkstra, floyd_warshall, hamiltonian_cycle,
+                     shortest_distance, HamiltonianCycleNotFound)
 
 
 @pytest.fixture
@@ -54,8 +55,32 @@ def test_dijkstra(g2):
 
 @pytest.mark.parametrize('graph', [g1(), g2()])
 def test_floyd_warshall(graph):
-    print('oi mãe')
     fw = floyd_warshall(graph)
 
     for v in graph.vertices:
         assert fw[v] == shortest_distance(graph, v)
+
+
+def test_hamiltonian_cycle():
+    g = Graph(
+        range(11),
+        zip(range(10), range(1, 10)),
+    )
+
+    for v in range(10):
+
+        g.link(v, 10, 2)
+
+    hc = hamiltonian_cycle(g, 0)
+
+    assert hc == list(range(11))
+
+
+def test_hamiltonian_cycle_raises():
+    g = Graph(
+        range(3),
+        ((0, 1), (1, 2)),
+    )
+
+    with pytest.raises(HamiltonianCycleNotFound):
+        hamiltonian_cycle(g, 1)

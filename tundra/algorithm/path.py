@@ -2,8 +2,10 @@ from math import inf
 from typing import Dict, List, Optional, Set, Tuple
 
 from tundra import Graph, Vertex
+from .misc import fringe
 
-__all__ = ('shortest_distance', 'dijkstra', 'floyd_warshall')
+__all__ = ('shortest_distance', 'dijkstra', 'floyd_warshall',
+           'hamiltonian_cycle', 'HamiltonianCycleNotFound')
 
 
 def _dijkstra(
@@ -23,8 +25,10 @@ def _dijkstra(
     unvisited: Set[Vertex] = g.vertices
 
     while len(unvisited) > 0:
-        (current, _), *__ = sorted({(v, distance[v]) for v in unvisited},
-                                   key=lambda t: t[1])
+        (current, _) = min(
+            {(v, distance[v]) for v in unvisited},
+            key=lambda t: t[1]
+        )
 
         unvisited.remove(current)
 
@@ -84,3 +88,34 @@ def floyd_warshall(g: Graph) -> Dict[Vertex, Dict[Vertex, float]]:
                     dist[i][j] = dist[i][k] + dist[k][j]
 
     return dist
+
+
+class HamiltonianCycleNotFound(Exception):
+    pass
+
+
+def hamiltonian_cycle(g: Graph, start: Vertex) -> List[Vertex]:
+    path = [start]
+
+    current = start
+
+    visited = set()
+
+    try:
+        while len(visited) != g.order:
+            visited.add(current)
+
+            (_, nearest) = min(
+                (g.weight[current, v], v)
+                for v in g.neighbors(current)
+                if v not in visited
+            )
+
+            path.append(nearest)
+
+            current = nearest
+    except ValueError as e:
+        if len(path) == g.order:
+            return path
+
+        raise HamiltonianCycleNotFound('graph has dead ends') from e

@@ -20,8 +20,10 @@ def prim(g: Graph) -> Graph:
 
     while vertices_left:
         # find the vertex in the fringe with the minimal cost
-        (current_vertex, current_cost), *_ = sorted(cost.items(),
-                                                    key=lambda t: t[1])
+        (current_vertex, current_cost) = min(
+            cost.items(),
+            key=lambda t: t[1],
+        )
 
         for v in g.neighbors(current_vertex):
             if v in cost and g.weight[v, current_vertex] < cost[v]:
