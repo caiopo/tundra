@@ -99,7 +99,7 @@ def hamiltonian_cycle(g: Graph, start: Vertex) -> List[Vertex]:
 
     current = start
 
-    visited = set()
+    visited: Set[Vertex] = set()
 
     try:
         while len(visited) != g.order:
@@ -118,4 +118,4 @@ def hamiltonian_cycle(g: Graph, start: Vertex) -> List[Vertex]:
         if len(path) == g.order:
             return path
 
-        raise HamiltonianCycleNotFound('graph has dead ends') from e
+    raise HamiltonianCycleNotFound('graph has dead ends')
